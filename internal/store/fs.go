@@ -11,7 +11,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/agentcrm/agentcrm/internal/model"
+	"github.com/AgentPal/AgentCRM/internal/model"
 	"gopkg.in/yaml.v3"
 )
 

@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/agentcrm/agentcrm/internal/store"
+	"github.com/AgentPal/AgentCRM/internal/store"
 	"github.com/spf13/cobra"
 )
 

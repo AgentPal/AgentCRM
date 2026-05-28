@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/agentcrm/agentcrm/internal/model"
+	"github.com/AgentPal/AgentCRM/internal/model"
 	"gopkg.in/yaml.v3"
 )
 

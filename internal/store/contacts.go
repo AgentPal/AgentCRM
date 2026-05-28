@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/agentcrm/agentcrm/internal/model"
+	"github.com/AgentPal/AgentCRM/internal/model"
 )
 
 // ContactStore 提供对联系人索引的数据库操作。

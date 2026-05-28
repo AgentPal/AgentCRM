@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/agentcrm/agentcrm/internal/model"
+	"github.com/AgentPal/AgentCRM/internal/model"
 )
 
 func openTestDB(t *testing.T) *DB {

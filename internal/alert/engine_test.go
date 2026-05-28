@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/agentcrm/agentcrm/internal/model"
-	"github.com/agentcrm/agentcrm/internal/store"
+	"github.com/AgentPal/AgentCRM/internal/model"
+	"github.com/AgentPal/AgentCRM/internal/store"
 )
 
 func setupTestStore(t *testing.T) (*store.Store, string) {

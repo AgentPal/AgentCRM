@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/agentcrm/agentcrm/internal/model"
+	"github.com/AgentPal/AgentCRM/internal/model"
 )
 
 func TestReindex(t *testing.T) {

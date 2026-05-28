@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/agentcrm/agentcrm/internal/model"
-	"github.com/agentcrm/agentcrm/internal/store"
+	"github.com/AgentPal/AgentCRM/internal/model"
+	"github.com/AgentPal/AgentCRM/internal/store"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
 )

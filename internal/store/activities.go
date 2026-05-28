@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/agentcrm/agentcrm/internal/model"
+	"github.com/AgentPal/AgentCRM/internal/model"
 )
 
 // ActivityStore 提供对活动的数据库操作。

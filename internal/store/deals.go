@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/agentcrm/agentcrm/internal/model"
+	"github.com/AgentPal/AgentCRM/internal/model"
 )
 
 // DealStore 提供对商机索引的数据库操作。
