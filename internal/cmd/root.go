@@ -22,7 +22,7 @@ var rootCmd = &cobra.Command{
 	Long: `AgentCRM 是一个本地化、文件存储、零服务进程的客户领域记忆系统。
 它以 CLI 工具的形式分发，让 AI Agent 拥有一个长期、可读、可备份的客户记忆。
 
-所有数据存储在 ~/.agentcrm/ 目录，文件即真相，可用任何编辑器打开。`,
+所有数据存储在 ~/AgentCRM/ 目录，文件即真相，可用任何编辑器打开。`,
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 		// 只有需要 store 的命令才初始化
 		return nil
@@ -38,13 +38,22 @@ func Execute() error {
 func getStore() (*store.Store, error) {
 	dir := configDir
 	if dir == "" {
-		home, err := os.UserHomeDir()
-		if err != nil {
-			return nil, fmt.Errorf("cannot determine home directory: %w", err)
-		}
-		dir = filepath.Join(home, ".agentcrm")
+		dir = defaultDataDir()
 	}
 	return store.Open(dir)
+}
+
+// defaultDataDir 返回默认数据目录。
+// 优先级：AGENTCRM_HOME 环境变量 > ~/AgentCRM
+func defaultDataDir() string {
+	if env := os.Getenv("AGENTCRM_HOME"); env != "" {
+		return env
+	}
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "./AgentCRM"
+	}
+	return filepath.Join(home, "AgentCRM")
 }
 
 // getActor 返回 actor 值，优先级：--actor 参数 > AGENTCRM_ACTOR 环境变量 > "unknown"
@@ -59,7 +68,7 @@ func getActor() string {
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVar(&configDir, "data-dir", "", "数据目录（默认 ~/.agentcrm）")
+	rootCmd.PersistentFlags().StringVar(&configDir, "data-dir", "", "数据目录（默认 ~/AgentCRM，可被 AGENTCRM_HOME 覆盖）")
 	rootCmd.PersistentFlags().StringVar(&format, "format", "text", "输出格式: text 或 json")
 	rootCmd.PersistentFlags().StringVar(&actor, "actor", "", "执行者名称（默认 AGENTCRM_ACTOR 环境变量或 unknown）")
 

@@ -21,7 +21,7 @@ type Store struct {
 	Events    *EventStore
 	Memos     *MemoStore
 
-	configDir string // ~/.agentcrm
+	configDir string // ~/AgentCRM
 }
 
 // Open 打开或创建数据目录和数据库。
@@ -46,7 +46,7 @@ func Open(configDir string) (*Store, error) {
 	}
 
 	// 打开 SQLite
-	dbPath := filepath.Join(absDir, "index.db")
+	dbPath := filepath.Join(absDir, ".index.db")
 	db, err := OpenDB(dbPath)
 	if err != nil {
 		return nil, fmt.Errorf("open db: %w", err)

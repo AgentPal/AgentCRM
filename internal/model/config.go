@@ -2,7 +2,7 @@ package model
 
 import "encoding/json"
 
-// Config 是 ~/.agentcrm/config.json 的结构。
+// Config 是 ~/AgentCRM/config.json 的结构。
 type Config struct {
 	Version string `json:"version"`
 	DataDir string `json:"data_dir"`

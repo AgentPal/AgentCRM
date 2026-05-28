@@ -3,7 +3,7 @@ package model
 import "time"
 
 // Deal 表示一个商机。
-// 存储为 ~/.agentcrm/deals/<slug>.md。
+// 存储为 ~/AgentCRM/deals/<slug>.md。
 type Deal struct {
 	ID    string   `yaml:"id" json:"id"`
 	Slug  string   `yaml:"-" json:"slug"`

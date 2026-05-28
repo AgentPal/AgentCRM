@@ -776,7 +776,7 @@ func TestFileStore_Init(t *testing.T) {
 		t.Fatalf("Init: %v", err)
 	}
 
-	dirs := []string{"contacts", "deals", "activities", "events", "subscribers", "proposals", "alerts", "rules"}
+	dirs := []string{"contacts", "deals", "activities", "events", ".subscribers", "proposals", "alerts", "rules"}
 	for _, d := range dirs {
 		path := filepath.Join(dir, d)
 		if _, err := os.Stat(path); os.IsNotExist(err) {
@@ -849,7 +849,7 @@ func TestFileStore_ContactListFiles(t *testing.T) {
 func TestFileStore_SubscriberCursor(t *testing.T) {
 	dir := tempDir(t)
 	fs := NewFileStore(dir)
-	os.MkdirAll(filepath.Join(dir, "subscribers"), 0755)
+	os.MkdirAll(filepath.Join(dir, ".subscribers"), 0755)
 
 	sc := &model.SubscriberCursor{
 		Actor:   "test-bot",
