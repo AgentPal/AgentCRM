@@ -3,7 +3,7 @@ package model
 import "time"
 
 // Contact 表示一个联系人。
-// 存储为 ~/.agentcrm/contacts/<slug>.md，frontmatter 是机器读的，body 是人和 LLM 可读的。
+// 存储为 ~/AgentCRM/contacts/<slug>.md，frontmatter 是机器读的，body 是人和 LLM 可读的。
 type Contact struct {
 	ID    string `yaml:"id" json:"id"`
 	Slug  string `yaml:"-" json:"slug"`

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -51,8 +52,8 @@ func TestInit(t *testing.T) {
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
 		t.Errorf("data dir not created")
 	}
-	if _, err := os.Stat(dir + "/index.db"); os.IsNotExist(err) {
-		t.Errorf("index.db not created")
+	if _, err := os.Stat(filepath.Join(dir, ".index.db")); os.IsNotExist(err) {
+		t.Errorf(".index.db not created")
 	}
 }
 

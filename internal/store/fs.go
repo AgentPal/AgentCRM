@@ -23,7 +23,7 @@ type FileStore struct {
 }
 
 // NewFileStore 创建文件存储层。
-// rootDir 是 ~/.agentcrm/ 目录。
+// rootDir 是 ~/AgentCRM/ 目录。
 func NewFileStore(rootDir string) *FileStore {
 	return &FileStore{rootDir: rootDir}
 }
@@ -42,7 +42,7 @@ func (fs *FileStore) Init() error {
 		filepath.Join(fs.rootDir, "memory", "contacts"),
 		filepath.Join(fs.rootDir, "memory", "deals"),
 		filepath.Join(fs.rootDir, "events"),
-		filepath.Join(fs.rootDir, "subscribers"),
+		filepath.Join(fs.rootDir, ".subscribers"),
 		filepath.Join(fs.rootDir, "proposals"),
 		filepath.Join(fs.rootDir, "alerts"),
 		filepath.Join(fs.rootDir, "rules"),
@@ -519,7 +519,7 @@ func (fs *FileStore) ReadConfig() (*model.Config, error) {
 
 // SubscriberPath 返回订阅者 cursor 文件路径。
 func (fs *FileStore) SubscriberPath(actor string) string {
-	return filepath.Join(fs.rootDir, "subscribers", actor+".json")
+	return filepath.Join(fs.rootDir, ".subscribers", actor+".json")
 }
 
 // WriteSubscriberCursor 写入 cursor。

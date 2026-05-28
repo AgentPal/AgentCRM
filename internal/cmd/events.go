@@ -170,7 +170,7 @@ var subscribersListCmd = &cobra.Command{
 		}
 		defer s.Close()
 
-		dir := filepath.Join(s.ConfigDir(), "subscribers")
+		dir := filepath.Join(s.ConfigDir(), ".subscribers")
 		entries, err := os.ReadDir(dir)
 		if err != nil {
 			if os.IsNotExist(err) {

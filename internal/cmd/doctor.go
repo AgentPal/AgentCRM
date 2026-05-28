@@ -48,7 +48,7 @@ var doctorCmd = &cobra.Command{
 			fmt.Println("AgentCRM data integrity check")
 			fmt.Println("==============================")
 			fmt.Printf("  Data dir: %s\n", s.ConfigDir())
-			fmt.Printf("  Database: %s\n", filepath.Join(s.ConfigDir(), "index.db"))
+			fmt.Printf("  Database: %s\n", filepath.Join(s.ConfigDir(), ".index.db"))
 		}
 
 		for _, name := range selected {
