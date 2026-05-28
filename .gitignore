@@ -1,0 +1,28 @@
+# AgentCRM 数据目录（默认位置，用户可配置 --data-dir）
+~/.agentcrm/
+
+# SQLite 索引（可从文件重建）
+*.db
+*.db-wal
+*.db-shm
+
+# 构建产物
+agentcrm.exe
+agentcrm
+dist/
+
+# 测试产物
+*.out
+
+# Claude 配置
+.claude/
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 系统
+.DS_Store
+Thumbs.db
