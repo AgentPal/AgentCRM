@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/AgentPal/AgentCRM/internal/i18n"
 	"github.com/AgentPal/AgentCRM/internal/model"
 	"github.com/AgentPal/AgentCRM/internal/search"
 	"github.com/spf13/cobra"
@@ -12,12 +13,12 @@ import (
 
 var contactCmd = &cobra.Command{
 	Use:   "contact",
-	Short: "管理联系人",
+	Short: i18n.T("cmd.contact.short"),
 }
 
 var contactUpsertCmd = &cobra.Command{
 	Use:   "upsert",
-	Short: "创建或更新联系人（按 email 去重）",
+	Short: i18n.T("cmd.contact.upsert.short"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		name, _ := cmd.Flags().GetString("name")
 		email, _ := cmd.Flags().GetString("email")
@@ -80,16 +81,16 @@ var contactUpsertCmd = &cobra.Command{
 			})
 			fmt.Println(string(out))
 		} else {
-			action := "已更新"
 			if created {
-				action = "已创建"
+				fmt.Printf(i18n.T("output.contact.upsert.created")+"\n", c.Name, c.ID)
+			} else {
+				fmt.Printf(i18n.T("output.contact.upsert.updated")+"\n", c.Name, c.ID)
 			}
-			fmt.Printf("%s 联系人: %s (%s)\n", action, c.Name, c.ID)
 			if c.Company != "" {
-				fmt.Printf("  公司: %s\n", c.Company)
+				fmt.Println(i18n.T("output.contact.upsert.company", c.Company))
 			}
 			if c.Title != "" {
-				fmt.Printf("  职位: %s\n", c.Title)
+				fmt.Println(i18n.T("output.contact.upsert.title", c.Title))
 			}
 		}
 		return nil
@@ -98,7 +99,7 @@ var contactUpsertCmd = &cobra.Command{
 
 var contactGetCmd = &cobra.Command{
 	Use:   "get <id-or-slug>",
-	Short: "获取联系人详情",
+	Short: i18n.T("cmd.contact.get.short"),
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		asOf, _ := cmd.Flags().GetString("as-of")
@@ -126,7 +127,7 @@ var contactGetCmd = &cobra.Command{
 			fmt.Println(string(out))
 		} else {
 			if asOf != "" {
-				fmt.Printf("[时间点: %s]\n", asOf)
+				fmt.Println(i18n.T("output.contact.get.as_of", asOf))
 			}
 			fmt.Printf("ID: %s\n", c.ID)
 			fmt.Printf("Name: %s\n", c.Name)
@@ -152,7 +153,7 @@ var contactGetCmd = &cobra.Command{
 
 var contactSearchCmd = &cobra.Command{
 	Use:   "search <query>",
-	Short: "搜索联系人",
+	Short: i18n.T("cmd.contact.search.short"),
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		limit, _ := cmd.Flags().GetInt("limit")
@@ -188,7 +189,7 @@ var contactSearchCmd = &cobra.Command{
 			fmt.Println(string(out))
 		} else {
 			if len(results) == 0 {
-				fmt.Println("未找到匹配的联系人")
+				fmt.Println(i18n.T("output.contact.search.none"))
 				return nil
 			}
 			for i, r := range results {
@@ -204,7 +205,7 @@ var contactSearchCmd = &cobra.Command{
 					fmt.Printf(" - %s", r.Email)
 				}
 				if r.LastActivityAt != "" {
-					fmt.Printf(" [最近: %s]", r.LastActivityAt[:10])
+					fmt.Printf(i18n.T("output.contact.search.recent"), r.LastActivityAt[:10])
 				}
 				if r.Score > 0 {
 					fmt.Printf(" [%.2f]", r.Score)
@@ -218,7 +219,7 @@ var contactSearchCmd = &cobra.Command{
 
 var contactListCmd = &cobra.Command{
 	Use:   "list",
-	Short: "列出联系人",
+	Short: i18n.T("cmd.contact.list.short"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		tag, _ := cmd.Flags().GetString("tag")
 		updatedSince, _ := cmd.Flags().GetString("updated-since")
@@ -241,7 +242,7 @@ var contactListCmd = &cobra.Command{
 			fmt.Println(string(out))
 		} else {
 			if len(results) == 0 {
-				fmt.Println("无联系人")
+				fmt.Println(i18n.T("output.contact.list.none"))
 				return nil
 			}
 			for _, r := range results {
@@ -251,7 +252,7 @@ var contactListCmd = &cobra.Command{
 				}
 				fmt.Println()
 			}
-			fmt.Printf("\n共 %d 个联系人\n", len(results))
+			fmt.Printf(i18n.T("output.contact.list.count"), len(results))
 		}
 		return nil
 	},
@@ -259,7 +260,7 @@ var contactListCmd = &cobra.Command{
 
 var contactUpdateCmd = &cobra.Command{
 	Use:   "update <id>",
-	Short: "更新联系人字段（自动归档旧值到 _history）",
+	Short: i18n.T("cmd.contact.update.short"),
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		sets, _ := cmd.Flags().GetStringArray("set")
@@ -298,11 +299,11 @@ var contactUpdateCmd = &cobra.Command{
 
 			if format != "json" {
 				if oldVal == value {
-					fmt.Printf("%s 已经是该值\n", field)
+					fmt.Println(i18n.T("output.contact.update.same", field))
 				} else if oldVal != "" {
-					fmt.Printf("已更新 %s: %s → %s\n", field, oldVal, value)
+					fmt.Println(i18n.T("output.contact.update.changed", field, oldVal, value))
 				} else {
-					fmt.Printf("已设置 %s = %s\n", field, value)
+					fmt.Println(i18n.T("output.contact.update.set", field, value))
 				}
 			}
 		}
@@ -312,7 +313,7 @@ var contactUpdateCmd = &cobra.Command{
 
 var contactHistoryCmd = &cobra.Command{
 	Use:   "history <id>",
-	Short: "查看联系人字段历史",
+	Short: i18n.T("cmd.contact.history.short"),
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		field, _ := cmd.Flags().GetString("field")
@@ -346,7 +347,7 @@ var contactHistoryCmd = &cobra.Command{
 		}
 
 		if len(history) == 0 {
-			fmt.Println("无历史记录")
+			fmt.Println(i18n.T("output.contact.history.none"))
 			return nil
 		}
 
@@ -359,7 +360,7 @@ var contactHistoryCmd = &cobra.Command{
 		for _, h := range history {
 			to := h.To
 			if to == "~" || to == "" {
-				to = "至今"
+				to = i18n.T("output.contact.history.to")
 			}
 			fmt.Printf("%s: %s (from: %s, to: %s)", field, h.Value, h.From, to)
 			if h.SetBy != "" {
@@ -373,8 +374,8 @@ var contactHistoryCmd = &cobra.Command{
 
 var contactMergeCmd = &cobra.Command{
 	Use:   "merge <keeper-id> <merge-id>",
-	Short: "合并两个联系人",
-	Long:  `将 merge-id 合并到 keeper-id。merge-id 的文件会被重命名为 .merged-into-<keeper-id>.md。`,
+	Short: i18n.T("cmd.contact.merge.short"),
+	Long:  i18n.T("cmd.contact.merge.long"),
 	Args:  cobra.ExactArgs(2),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		reason, _ := cmd.Flags().GetString("reason")
@@ -403,9 +404,9 @@ var contactMergeCmd = &cobra.Command{
 		s.Contacts.Delete(mergee.ID)
 
 		if format != "json" {
-			fmt.Printf("已合并: %s (%s) ← %s (%s)\n", keeper.Name, keeper.ID, mergee.Name, mergee.ID)
+			fmt.Println(i18n.T("output.contact.merge.success", keeper.Name, keeper.ID, mergee.Name, mergee.ID))
 			if reason != "" {
-				fmt.Printf("原因: %s\n", reason)
+				fmt.Println(i18n.T("output.contact.merge.reason", reason))
 			}
 		}
 		return nil
@@ -421,27 +422,27 @@ func init() {
 	contactCmd.AddCommand(contactHistoryCmd)
 	contactCmd.AddCommand(contactMergeCmd)
 
-	contactUpsertCmd.Flags().String("name", "", "联系人姓名（必需）")
-	contactUpsertCmd.Flags().String("email", "", "邮箱")
-	contactUpsertCmd.Flags().String("company", "", "公司")
-	contactUpsertCmd.Flags().String("title", "", "职位")
-	contactUpsertCmd.Flags().String("phone", "", "电话")
-	contactUpsertCmd.Flags().String("source", "", "来源")
-	contactUpsertCmd.Flags().StringSlice("tag", nil, "标签")
+	contactUpsertCmd.Flags().String("name", "", i18n.T("flag.contact.name"))
+	contactUpsertCmd.Flags().String("email", "", i18n.T("flag.contact.email"))
+	contactUpsertCmd.Flags().String("company", "", i18n.T("flag.contact.company"))
+	contactUpsertCmd.Flags().String("title", "", i18n.T("flag.contact.title"))
+	contactUpsertCmd.Flags().String("phone", "", i18n.T("flag.contact.phone"))
+	contactUpsertCmd.Flags().String("source", "", i18n.T("flag.contact.source"))
+	contactUpsertCmd.Flags().StringSlice("tag", nil, i18n.T("flag.contact.tag"))
 
-	contactGetCmd.Flags().String("as-of", "", "查看指定时间点的数据")
+	contactGetCmd.Flags().String("as-of", "", i18n.T("flag.contact.as_of"))
 
-	contactSearchCmd.Flags().Int("limit", 10, "返回数量上限")
+	contactSearchCmd.Flags().Int("limit", 10, i18n.T("flag.contact.limit"))
 
-	contactListCmd.Flags().String("tag", "", "按标签过滤")
-	contactListCmd.Flags().String("updated-since", "", "按更新日期过滤")
-	contactListCmd.Flags().String("has-field", "", "按存在字段过滤 (birthday)")
-	contactListCmd.Flags().Int("limit", 50, "返回数量上限")
+	contactListCmd.Flags().String("tag", "", i18n.T("flag.contact.tag_filter"))
+	contactListCmd.Flags().String("updated-since", "", i18n.T("flag.contact.updated_since"))
+	contactListCmd.Flags().String("has-field", "", i18n.T("flag.contact.has_field"))
+	contactListCmd.Flags().Int("limit", 50, i18n.T("flag.contact.limit"))
 
-	contactUpdateCmd.Flags().StringArray("set", nil, "设置字段 (field=value)")
-	contactUpdateCmd.Flags().String("reason", "", "变更原因")
+	contactUpdateCmd.Flags().StringArray("set", nil, i18n.T("flag.contact.set"))
+	contactUpdateCmd.Flags().String("reason", "", i18n.T("flag.contact.reason"))
 
-	contactHistoryCmd.Flags().String("field", "", "字段名")
+	contactHistoryCmd.Flags().String("field", "", i18n.T("flag.contact.field"))
 
-	contactMergeCmd.Flags().String("reason", "", "合并原因")
+	contactMergeCmd.Flags().String("reason", "", i18n.T("flag.contact.merge_reason"))
 }
