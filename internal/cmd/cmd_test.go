@@ -44,7 +44,7 @@ func TestInit(t *testing.T) {
 	if err != nil {
 		t.Fatalf("init failed: %v\noutput: %s", err, out)
 	}
-	if !strings.Contains(out, "已初始化") {
+	if !strings.Contains(out, "AgentCRM initialized") {
 		t.Errorf("unexpected output: %s", out)
 	}
 
@@ -198,7 +198,7 @@ func TestContactLifecycle(t *testing.T) {
 	if err != nil {
 		t.Fatalf("merge failed: %v\noutput: %s", err, out)
 	}
-	if !strings.Contains(out, "已合并") {
+	if !strings.Contains(out, "Merged:") {
 		t.Errorf("unexpected merge output: %s", out)
 	}
 }
