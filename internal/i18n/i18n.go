@@ -47,6 +47,10 @@ func MustInit(cmdLang string) {
 	case os.Getenv("AGENTCRM_LANG") != "":
 		lang = os.Getenv("AGENTCRM_LANG")
 	}
+	// TODO: integrate config.json "lang" field — deferred because config
+	// is loaded after store init, which happens after MustInit. Root
+	// command handler should call SetLang(cfg.Lang) once config is
+	// available, when no higher-priority source (flag, env) was set.
 
 	mu.Lock()
 	current = lang
@@ -99,6 +103,10 @@ func T(key string, args ...interface{}) string {
 // Tn translates with number-aware English pluralization.
 // For n==1 the base key is used; for n!=1 the key+".plural" variant.
 // Chinese always uses the base key (no grammatical plural).
+//
+// TODO: add .plural sample keys + TestTn_Singular/TestTn_Plural when
+// the first real plural message is introduced. Current implementation
+// has the selection logic but no test coverage with actual plural keys.
 func Tn(key string, n int, args ...interface{}) string {
 	mu.RLock()
 	defer mu.RUnlock()

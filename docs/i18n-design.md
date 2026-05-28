@@ -84,13 +84,18 @@ Accepts `"en"` or `"zh"`. Returns error on unknown code.
 | 3 | `config.json` `lang` field | `{ "lang": "zh" }` |
 | 4 | Default | `"en"` |
 
+> **Implementation note (v1.0.0-alpha):** Priority layer 3 (config.json) is
+> deferred. Config is loaded after store init, which happens after MustInit.
+> Root command handler should call `SetLang(cfg.Lang)` once config is available,
+> when no higher-priority source (--flag, env) was set.
+
 Init flow:
 
 ```go
 func Init(lang string) {
     // 1. If lang param is non-empty, use it (called from root.go with --lang value)
     // 2. Else check AGENTCRM_LANG
-    // 3. Else check config.json (loaded after FS init)
+    // 3. Else check config.json (loaded after FS init) — deferred
     // 4. Default "en"
 }
 ```
