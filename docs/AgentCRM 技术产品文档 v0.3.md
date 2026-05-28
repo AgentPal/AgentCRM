@@ -14,7 +14,7 @@
 
 **AgentCRM 是一个本地化、文件存储、零服务进程的客户领域记忆系统**。它以 Skill 包 + CLI 工具的形式分发，让 Claude Code、Claude Desktop、OpenClaw、Codex、Hermes 等任何支持 Skill 的 Agent，在装上之后立刻拥有一个长期、可读、可备份的客户记忆。
 
-它不是 CRM 软件，不是 SaaS 服务。它是你 home 目录下的一个文件夹 (`~/.agentcrm/`)，加上一个 Skill 包和一个静态编译的 CLI 二进制。
+它不是 CRM 软件，不是 SaaS 服务。它是你 home 目录下的一个文件夹 (`~/AgentCRM/`)，加上一个 Skill 包和一个静态编译的 CLI 二进制。
 
 **v0.3 相对于 v0.2 的本质升级**：从"轻量 CRM"重新定位为"领域特化的记忆系统"。这意味着我们从 Mem0、Supermemory、Zep、Hindsight 等通用记忆系统借鉴了五项关键能力：记忆分层、temporal validity、propose/commit 矛盾消解、多策略 hybrid retrieval、selective forgetting。同时加入了完整的多 Agent 协作机制（事件订阅 + actor 标记）。
 
@@ -77,7 +77,7 @@ AgentCRM 解决的是同一类问题，但范围聚焦在客户关系这一个�
 
 - **OCP 用户已经在文件里工作**：他们的笔记在 Obsidian/Markdown，代码在本地仓库，Agent 在本机跑。给他们云端 CRM 是逆流
 - **开源产品要让人立刻能跑**：注册 + OAuth + 配 Postgres 的开源 CRM，文档读完用户已经走了
-- **数据完全归用户是真正的护城河**：随时可以 `rm -rf ~/.agentcrm/`，随时可以打开 markdown 看内容。这种"反锁定"恰恰是 OCP 群体愿意长期用的理由
+- **数据完全归用户是真正的护城河**：随时可以 `rm -rf ~/AgentCRM/`，随时可以打开 markdown 看内容。这种"反锁定"恰恰是 OCP 群体愿意长期用的理由
 - **分发渠道天然存在**：GitHub、Claude Skill Marketplace、OpenClaw `awesome-skills`——这些天然为开源 Skill 设计
 
 ### 2.2 为什么定位升级为"记忆系统"
@@ -191,7 +191,7 @@ AgentCRM 借鉴 Letta/Supermemory 的记忆分层架构，把数据明确分成�
 ### 4.1 目录结构（完整版）
 
 ```
-~/.agentcrm/
+~/AgentCRM/
 ├── config.json
 ├── index.db                    # SQLite 索引，可重建
 │
@@ -550,7 +550,7 @@ CREATE VIRTUAL TABLE memos_fts USING fts5(id, text, content='');
 ```json
 {
   "version": "1.0.0",
-  "data_dir": "~/.agentcrm",
+  "data_dir": "~/AgentCRM",
   "user": {
     "name": "张大牛",
     "primary_email": "me@example.com",
@@ -709,7 +709,7 @@ agentcrm subscribers reset <actor>     # 把 cursor 重置到 0 或指定 seq
 #### 5.2.7 系统
 
 ```bash
-agentcrm init [--data-dir ~/.agentcrm]
+agentcrm init [--data-dir ~/AgentCRM]
 agentcrm reindex                  # 从文件重建 SQLite 索引
 agentcrm doctor                   # 数据完整性检查
 agentcrm doctor --fix-conflicts   # Git 合并冲突协助
@@ -1418,7 +1418,7 @@ agentcrm import csv ./hubspot-export.csv --mapping ./mapping.json
 
 ### 12.1 数据完全本地
 
-`~/.agentcrm/` 永远不主动传到任何远端。除非：
+`~/AgentCRM/` 永远不主动传到任何远端。除非：
 
 - 用户自配 Git remote
 - 用户 Agent 在处理 skill 时把数据片段发给 LLM（这是 Agent 自己的事）
