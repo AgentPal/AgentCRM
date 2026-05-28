@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/AgentPal/AgentCRM/internal/i18n"
 	"github.com/AgentPal/AgentCRM/internal/store"
 	"github.com/spf13/cobra"
 )
@@ -15,24 +16,19 @@ var (
 	actor     string
 )
 
-// rootCmd 是 CLI 的根命令。
+// rootCmd is the root command of the CLI.
 var rootCmd = &cobra.Command{
 	SilenceErrors:  true,
 	SilenceUsage:   true,
-	Use:   "agentcrm",
-	Short: "本地客户记忆系统 - 给你的 AI Agent 一个共享的客户大脑",
-	Long: `AgentCRM 是一个本地化、文件存储、零服务进程的客户领域记忆系统。
-它以 CLI 工具的形式分发，让 AI Agent 拥有一个长期、可读、可备份的客户记忆。
-
-所有数据存储在 ~/AgentCRM/ 目录，文件即真相，可用任何编辑器打开。`,
+	Use:            "agentcrm",
+	Short:          i18n.T("cmd.root.short"),
+	Long:           i18n.T("cmd.root.long"),
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		// 只有需要 store 的命令才初始化
 		return nil
 	},
 }
 
-
-// getStore 创建并返回 Store 实例。
+// getStore creates and returns a Store instance.
 func getStore() (*store.Store, error) {
 	dir := configDir
 	if dir == "" {
@@ -41,8 +37,8 @@ func getStore() (*store.Store, error) {
 	return store.Open(dir)
 }
 
-// defaultDataDir 返回默认数据目录。
-// 优先级：AGENTCRM_HOME 环境变量 > ~/AgentCRM
+// defaultDataDir returns the default data directory.
+// Priority: AGENTCRM_HOME env > ~/AgentCRM
 func defaultDataDir() string {
 	if env := os.Getenv("AGENTCRM_HOME"); env != "" {
 		return env
@@ -54,7 +50,8 @@ func defaultDataDir() string {
 	return filepath.Join(home, "AgentCRM")
 }
 
-// getActor 返回 actor 值，优先级：--actor 参数 > AGENTCRM_ACTOR 环境变量 > "unknown"
+// getActor returns the actor value.
+// Priority: --actor flag > AGENTCRM_ACTOR env > "unknown"
 func getActor() string {
 	if actor != "" {
 		return actor
@@ -66,9 +63,9 @@ func getActor() string {
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVar(&configDir, "data-dir", "", "数据目录（默认 ~/AgentCRM，可被 AGENTCRM_HOME 覆盖）")
-	rootCmd.PersistentFlags().StringVar(&format, "format", "text", "输出格式: text 或 json")
-	rootCmd.PersistentFlags().StringVar(&actor, "actor", "", "执行者名称（默认 AGENTCRM_ACTOR 环境变量或 unknown）")
+	rootCmd.PersistentFlags().StringVar(&configDir, "data-dir", "", i18n.T("flag.data_dir"))
+	rootCmd.PersistentFlags().StringVar(&format, "format", "text", i18n.T("flag.format"))
+	rootCmd.PersistentFlags().StringVar(&actor, "actor", "", i18n.T("flag.actor"))
 
 	rootCmd.AddCommand(initCmd)
 	rootCmd.AddCommand(versionCmd)
@@ -84,26 +81,24 @@ func init() {
 	rootCmd.AddCommand(ruleCmd)
 	rootCmd.AddCommand(exportCmd)
 	rootCmd.AddCommand(importCmd)
-	rootCmd.AddCommand(timelineCmd) // timeline 也可作为顶层命令使用
+	rootCmd.AddCommand(timelineCmd)
 }
 
-// appVersion 在构建时通过 -ldflags 注入。
+// appVersion is injected at build time via -ldflags.
 var appVersion = "v1.0.0-dev"
 
-// versionCmd 显示版本信息。
 var versionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "显示版本信息",
+	Short: i18n.T("cmd.root.version"),
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Printf("AgentCRM %s\n", appVersion)
-		fmt.Println("本地客户记忆系统 - 文件即真相")
+		fmt.Println(i18n.T("output.root.version.text"))
 	},
 }
 
-// initCmd 初始化数据目录。
 var initCmd = &cobra.Command{
 	Use:   "init",
-	Short: "初始化 AgentCRM 数据目录",
+	Short: i18n.T("cmd.root.init"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		s, err := getStore()
 		if err != nil {
@@ -115,7 +110,6 @@ var initCmd = &cobra.Command{
 			return fmt.Errorf("init directories: %w", err)
 		}
 
-		// 写入默认配置
 		cfg, err := s.FS.ReadConfig()
 		if err != nil {
 			return err
@@ -124,15 +118,14 @@ var initCmd = &cobra.Command{
 			return fmt.Errorf("write config: %w", err)
 		}
 
-		fmt.Printf("AgentCRM 已初始化: %s\n", s.ConfigDir())
+		fmt.Printf(i18n.T("output.root.init.success")+"\n", s.ConfigDir())
 		return nil
 	},
 }
 
-// reindexCmd 从文件重建 SQLite 索引。
 var reindexCmd = &cobra.Command{
 	Use:   "reindex",
-	Short: "从文件重建 SQLite 索引",
+	Short: i18n.T("cmd.root.reindex"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		s, err := getStore()
 		if err != nil {
@@ -143,4 +136,3 @@ var reindexCmd = &cobra.Command{
 		return s.Reindex()
 	},
 }
-
