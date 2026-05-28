@@ -1,10 +1,10 @@
 #!/bin/sh
 # AgentCRM 安装脚本
-# 用法: curl -sfL https://github.com/agentcrm/agentcrm/releases/latest/download/install.sh | sh
+# 用法: curl -sfL https://github.com/AgentPal/AgentCRM/releases/latest/download/install.sh | sh
 
 set -eu
 
-REPO="agentcrm/agentcrm"
+REPO="AgentPal/AgentCRM"
 INSTALL_DIR="${INSTALL_DIR:-/usr/local/bin}"
 
 # 检测平台
