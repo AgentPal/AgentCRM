@@ -1,4 +1,4 @@
-module github.com/agentcrm/agentcrm
+module github.com/AgentPal/AgentCRM
 
 go 1.25.0
 

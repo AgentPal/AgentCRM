@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/agentcrm/agentcrm/internal/model"
-	"github.com/agentcrm/agentcrm/internal/search"
+	"github.com/AgentPal/AgentCRM/internal/model"
+	"github.com/AgentPal/AgentCRM/internal/search"
 	"github.com/spf13/cobra"
 )
 

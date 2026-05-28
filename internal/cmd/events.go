@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/agentcrm/agentcrm/internal/model"
+	"github.com/AgentPal/AgentCRM/internal/model"
 	"github.com/spf13/cobra"
 )
 

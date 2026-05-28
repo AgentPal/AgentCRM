@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/agentcrm/agentcrm/internal/model"
+	"github.com/AgentPal/AgentCRM/internal/model"
 )
 
 func TestExportCSV(t *testing.T) {
