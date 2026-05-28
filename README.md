@@ -5,7 +5,7 @@
 **Customer brain for the OPC era · Lives in your home directory**
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Go Version](https://img.shields.io/github/go-mod/go-version/AgentPal/AgentCRM)](go.mod)
+[![Go Version](https://img.shields.io/badge/go-1.22+-blue)](https://go.dev)
 [![Skill Format](https://img.shields.io/badge/skill-Claude%20%7C%20OpenClaw%20%7C%20Codex%20%7C%20Hermes-purple)](#supported-agents)
 
 A **shared customer brain** for your Claude / OpenClaw / Codex / Hermes agents.
