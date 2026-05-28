@@ -1,0 +1,24 @@
+# Auto-detect text files and perform LF normalization
+* text=auto eol=lf
+
+# Explicitly declare text files
+*.go    text eol=lf
+*.md    text eol=lf
+*.json  text eol=lf
+*.yaml  text eol=lf
+*.yml   text eol=lf
+*.sh    text eol=lf
+*.toml  text eol=lf
+Makefile text eol=lf
+
+# Windows scripts (if any in future)
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+
+# Binary files (no transformation)
+*.png   binary
+*.jpg   binary
+*.ico   binary
+*.db    binary
+*.tar.gz binary
+*.zip   binary
