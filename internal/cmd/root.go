@@ -17,6 +17,8 @@ var (
 
 // rootCmd 是 CLI 的根命令。
 var rootCmd = &cobra.Command{
+	SilenceErrors:  true,
+	SilenceUsage:   true,
 	Use:   "agentcrm",
 	Short: "本地客户记忆系统 - 给你的 AI Agent 一个共享的客户大脑",
 	Long: `AgentCRM 是一个本地化、文件存储、零服务进程的客户领域记忆系统。
@@ -29,10 +31,6 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-// Execute 运行 CLI。
-func Execute() error {
-	return rootCmd.Execute()
-}
 
 // getStore 创建并返回 Store 实例。
 func getStore() (*store.Store, error) {

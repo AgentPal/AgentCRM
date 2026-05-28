@@ -28,7 +28,7 @@ var contactUpsertCmd = &cobra.Command{
 		tags, _ := cmd.Flags().GetStringSlice("tag")
 
 		if name == "" {
-			return fmt.Errorf("--name 是必需的")
+			return ErrContactNameRequired
 		}
 
 		s, err := getStore()
@@ -266,7 +266,7 @@ var contactUpdateCmd = &cobra.Command{
 		reason, _ := cmd.Flags().GetString("reason")
 
 		if len(sets) == 0 {
-			return fmt.Errorf("至少需要一个 --set 参数")
+			return ErrContactSetRequired
 		}
 
 		s, err := getStore()
@@ -317,7 +317,7 @@ var contactHistoryCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		field, _ := cmd.Flags().GetString("field")
 		if field == "" {
-			return fmt.Errorf("--field 是必需的")
+			return ErrContactFieldRequired
 		}
 
 		s, err := getStore()
