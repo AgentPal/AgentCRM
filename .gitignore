@@ -1,5 +1,5 @@
-# AgentCRM 数据目录（默认位置，用户可配置 --data-dir）
-~/.agentcrm/
+# AgentCRM 数据目录（默认位置，用户可配置 AGENTCRM_HOME 或 --data-dir）
+~/AgentCRM/
 
 # SQLite 索引（可从文件重建）
 *.db
