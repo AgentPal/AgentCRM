@@ -25,12 +25,12 @@ var memoryWriteCmd = &cobra.Command{
 		validFrom, _ := cmd.Flags().GetString("valid-from")
 
 		if scope == "" || text == "" {
-			return fmt.Errorf("--scope 和 --text 是必需的")
+			return ErrMemoryScopeTextRequired
 		}
 
 		scopeType, scopeID := parseScope(scope)
 		if scopeType == "" {
-			return fmt.Errorf("无效 scope 格式，应如 contact:<id>")
+			return fmt.Errorf("invalid scope format, expected contact:<id>")
 		}
 
 		s, err := getStore()
@@ -68,7 +68,7 @@ var memoryListCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		scope, _ := cmd.Flags().GetString("scope")
 		if scope == "" {
-			return fmt.Errorf("--scope 是必需的")
+			return ErrMemoryScopeRequired
 		}
 
 		scopeType, scopeID := parseScope(scope)
@@ -202,7 +202,7 @@ var memoryProposeCmd = &cobra.Command{
 		confidence, _ := cmd.Flags().GetFloat64("confidence")
 
 		if scope == "" || statement == "" {
-			return fmt.Errorf("--scope 和 --statement 是必需的")
+			return ErrMemoryScopeStatementRequired
 		}
 
 		s, err := getStore()
@@ -245,7 +245,7 @@ var memoryCommitCmd = &cobra.Command{
 		action, _ := cmd.Flags().GetString("action")
 
 		if proposalID == "" || action == "" {
-			return fmt.Errorf("--proposal-id 和 --action 是必需的")
+			return ErrMemoryProposalActionRequired
 		}
 
 		s, err := getStore()

@@ -21,4 +21,10 @@ var (
 	ErrActivityContactRequired  = errors.New("--contact is required")
 	ErrActivitySummaryRequired  = errors.New("--summary is required")
 	ErrActivityDedupeKeyRequired = errors.New("--dedupe-key is required")
+
+	// Memory (PR 8)
+	ErrMemoryScopeTextRequired      = errors.New("--scope and --text are required")
+	ErrMemoryScopeRequired          = errors.New("--scope is required")
+	ErrMemoryScopeStatementRequired = errors.New("--scope and --statement are required")
+	ErrMemoryProposalActionRequired = errors.New("--proposal-id and --action are required")
 )

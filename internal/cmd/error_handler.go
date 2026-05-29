@@ -34,6 +34,14 @@ func userFacingError(err error) string {
 		return i18n.T("error.activity.summary.required")
 	case errors.Is(err, ErrActivityDedupeKeyRequired):
 		return i18n.T("error.activity.dedupe_key.required")
+	case errors.Is(err, ErrMemoryScopeTextRequired):
+		return i18n.T("error.memory.scope_text.required")
+	case errors.Is(err, ErrMemoryScopeRequired):
+		return i18n.T("error.memory.scope.required")
+	case errors.Is(err, ErrMemoryScopeStatementRequired):
+		return i18n.T("error.memory.scope_statement.required")
+	case errors.Is(err, ErrMemoryProposalActionRequired):
+		return i18n.T("error.memory.proposal_action.required")
 	default:
 		return err.Error()
 	}
