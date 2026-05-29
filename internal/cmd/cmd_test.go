@@ -9,7 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/AgentPal/AgentCRM/internal/model"
+	"github.com/AgentPal/AgentCRM/internal/i18n"
+		"github.com/AgentPal/AgentCRM/internal/model"
 )
 
 // executeCommand 执行命令并捕获 stdout 输出。
@@ -507,6 +508,7 @@ func TestMemoryLifecycle(t *testing.T) {
 }
 
 func TestEvents(t *testing.T) {
+	i18n.SetLang("en")
 	dir := t.TempDir()
 
 	_, err := executeCommand(t, "--data-dir", dir, "init")

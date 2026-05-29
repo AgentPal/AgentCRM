@@ -94,7 +94,7 @@ func TestT_Interpolation(t *testing.T) {
 
 func TestT_Interpolation_Int(t *testing.T) {
 	MustInit("en")
-	got := T("output.deal.list.count", 5)
+	got := Tn("output.deal.list.count", 5, 5)
 	if !strings.Contains(got, "5") || !strings.Contains(got, "deals") {
 		t.Errorf("unexpected: %q", got)
 	}

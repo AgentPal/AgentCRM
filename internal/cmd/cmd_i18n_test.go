@@ -17,6 +17,7 @@ func TestMain(m *testing.M) {
 func TestI18N_ChineseOutput(t *testing.T) {
 	// MustInit is called by TestMain or init, so we need to switch to zh
 	i18n.SetLang("zh")
+	defer i18n.SetLang("en")
 
 	dir := t.TempDir()
 	out, err := executeCommand(t, "--data-dir", dir, "init")
@@ -78,6 +79,7 @@ func TestI18N_DealEnglish(t *testing.T) {
 
 func TestI18N_DealChinese(t *testing.T) {
 	i18n.SetLang("zh")
+	defer i18n.SetLang("en")
 
 	dir := t.TempDir()
 	_, err := executeCommand(t, "--data-dir", dir, "init")
@@ -114,6 +116,7 @@ func TestI18N_ActivityEnglish(t *testing.T) {
 
 func TestI18N_ActivityChinese(t *testing.T) {
 	i18n.SetLang("zh")
+	defer i18n.SetLang("en")
 
 	dir := t.TempDir()
 	_, err := executeCommand(t, "--data-dir", dir, "init")
@@ -150,6 +153,7 @@ func TestI18N_AlertEnglish(t *testing.T) {
 
 func TestI18N_AlertChinese(t *testing.T) {
 	i18n.SetLang("zh")
+	defer i18n.SetLang("en")
 
 	dir := t.TempDir()
 	_, err := executeCommand(t, "--data-dir", dir, "init")
@@ -186,6 +190,7 @@ func TestI18N_EventsEnglish(t *testing.T) {
 
 func TestI18N_EventsChinese(t *testing.T) {
 	i18n.SetLang("zh")
+	defer i18n.SetLang("en")
 
 	dir := t.TempDir()
 	_, err := executeCommand(t, "--data-dir", dir, "init")
@@ -222,6 +227,7 @@ func TestI18N_MemoryEnglish(t *testing.T) {
 
 func TestI18N_MemoryChinese(t *testing.T) {
 	i18n.SetLang("zh")
+	defer i18n.SetLang("en")
 
 	dir := t.TempDir()
 	_, err := executeCommand(t, "--data-dir", dir, "init")

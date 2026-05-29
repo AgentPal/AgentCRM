@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/AgentPal/AgentCRM/internal/i18n"
 	"github.com/AgentPal/AgentCRM/internal/model"
 	"github.com/AgentPal/AgentCRM/internal/store"
 	"gopkg.in/yaml.v3"
@@ -82,8 +83,8 @@ func builtinRules() []model.Rule {
 			},
 			Then: model.RuleAction{
 				Alert: model.RuleAlert{
-					Title:      "商机长时间未跟进",
-					Suggestion: "联系客户了解进展，推进商机阶段",
+					Title:      i18n.T("alert.rule.stale_deal.title"),
+					Suggestion: i18n.T("alert.rule.stale_deal.suggestion"),
 				},
 			},
 		},
@@ -96,8 +97,8 @@ func builtinRules() []model.Rule {
 			},
 			Then: model.RuleAction{
 				Alert: model.RuleAlert{
-					Title:      "商机即将到截止日期",
-					Suggestion: "确认成交状态或更新预计日期",
+					Title:      i18n.T("alert.rule.closing_deadline.title"),
+					Suggestion: i18n.T("alert.rule.closing_deadline.suggestion"),
 				},
 			},
 		},
@@ -110,7 +111,7 @@ func builtinRules() []model.Rule {
 			},
 			Then: model.RuleAction{
 				Alert: model.RuleAlert{
-					Title:      "VIP 联系人长期未联系",
+					Title:      i18n.T("alert.rule.vip_silence.title"),
 					Suggestion: "发送问候或安排跟进",
 				},
 			},
@@ -123,8 +124,8 @@ func builtinRules() []model.Rule {
 			},
 			Then: model.RuleAction{
 				Alert: model.RuleAlert{
-					Title:      "有记忆条目已过期需要更新",
-					Suggestion: "运行 memory decay-scan 清理过期条目",
+					Title:      i18n.T("alert.rule.stale_memory.title"),
+					Suggestion: i18n.T("alert.rule.stale_memory.suggestion"),
 				},
 			},
 		},
