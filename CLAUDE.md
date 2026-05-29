@@ -127,4 +127,23 @@ CLI 的命令名、参数、输出格式**是 API**。Skill 依赖它们。任�
 - **不要自己决定加新依赖**。go.mod 变更必须先告知我并说明理由
 - **大改动先写 plan 再动手**。涉及多文件、跨模块的变更，先用 markdown 列计划等我确认
 - **测试是必需品不是 nice-to-have**。任何新增的 internal/ 代码都必须有对应的 _test.go
+### Test plan evidence requirement
+
+Each PR's Test plan must be backed by actual command output, not empty checkmarks:
+
+- `go vet ./... passes` → paste the actual vet output
+  (should be empty or "no issues found")
+- `go test ./... passes` → paste the last 5-10 lines of test output
+  (must show PASS/FAIL summary and package list)
+- `go build ./... succeeds` → paste the build output
+  (all packages listed without errors)
+
+If a command fails or reports issues, the PR must:
+1. Report the failure explicitly in the PR description
+2. Fix it, or explain why it is a known issue
+3. **Not** mark it as passing
+
+Empty checkmarks without evidence will be treated as false reporting
+and the PR will be returned for correction.
+
 - **不要 push 到 main**。所有变更走 PR

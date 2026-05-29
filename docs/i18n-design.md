@@ -829,7 +829,47 @@ assertion messages like "期望 张三, 得到 %s"). These fall into two categor
 
 ---
 
-## 13. Exclusions (v1.0 scope)
+## 13. Known Limitations
+
+### 13.1 Global i18n state leaks across tests
+
+The i18n package uses global state via `SetLang()` + `T()`. Language
+changes persist for the process lifetime, which means tests that change
+language can affect subsequent tests in the same package.
+
+**Mitigation:** any test that calls `SetLang("zh")` must
+`defer SetLang("en")` to restore the default.
+
+**Future direction (v0.2.0):** consider per-Localizer or context-based API
+so each test or request gets its own language instance.
+
+### 13.2 Lesson learned from PR 8 regression
+
+PR 8 (alert+events+memory migration) introduced two real regressions:
+
+1. **events.go compile error:** A migration script's string match broke at
+   a Chinese fullwidth parenthesis (U+FF08), leaving "（多 Agent 协作）"
+   outside the `i18n.T()` call. The package could not compile, but this
+   was not caught because the Test plan checkmarks were filled without
+   running the actual commands.
+
+2. **TestT_Interpolation_Int always failing:** A test asserting plural form
+   was written with `T()` instead of `Tn()`. The test had been failing
+   since creation but was masked by issue #1 — when a package cannot
+   compile, no test in it can run.
+
+**Detection:** PR 9a's events.go re-migration accidentally fixed issue #1,
+which immediately surfaced issue #2 on the first real test run.
+
+**Prevention (now enforced in CLAUDE.md):**
+- Migration scripts must handle CJK fullwidth characters in regex patterns
+- Each PR commit must include actual test execution output as evidence
+- Tests using `T()` with numeric arguments must verify the result
+  matches the expected singular/plural form
+
+---
+
+## 14. Exclusions (v1.0 scope)
 
 - Skill package (`skills/`) — Agent-facing content, always in the agent's
   language. No i18n needed.
