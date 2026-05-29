@@ -26,7 +26,7 @@ var dealCreateCmd = &cobra.Command{
 		stage, _ := cmd.Flags().GetString("stage")
 
 		if title == "" {
-			return fmt.Errorf("--title 是必需的")
+			return ErrDealTitleRequired
 		}
 
 		s, err := getStore()
@@ -93,7 +93,7 @@ var dealUpdateCmd = &cobra.Command{
 		reason, _ := cmd.Flags().GetString("reason")
 
 		if len(sets) == 0 {
-			return fmt.Errorf("至少需要一个 --set 参数")
+			return ErrDealSetRequired
 		}
 
 		s, err := getStore()
@@ -110,14 +110,14 @@ var dealUpdateCmd = &cobra.Command{
 		for _, set := range sets {
 			parts := split2(set, "=")
 			if parts == nil {
-				return fmt.Errorf("无效的 --set 格式: %s", set)
+				return fmt.Errorf("invalid --set format: %s (expected field=value)", set)
 			}
 			field, value := parts[0], parts[1]
 
 			switch field {
 			case "stage":
 				if !model.StageTransitionAllowed(d.Stage, value) {
-					return fmt.Errorf("无法从 %s 转换到 %s: won/lost 不可逆", d.Stage, value)
+					return fmt.Errorf("%w: cannot transition from %s to %s", ErrDealStageIrreversible, d.Stage, value)
 				}
 				if d.Stage == value {
 					if format != "json" {
@@ -294,7 +294,7 @@ var dealHistoryCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		field, _ := cmd.Flags().GetString("field")
 		if field == "" {
-			return fmt.Errorf("--field 是必需的")
+			return ErrDealFieldRequired
 		}
 
 		s, err := getStore()
@@ -355,7 +355,7 @@ var dealHistoryCmd = &cobra.Command{
 				fmt.Println()
 			}
 		default:
-			return fmt.Errorf("不支持的字段: %s (支持: stage, amount)", field)
+			return fmt.Errorf("%w: unsupported field: %s (supported: stage, amount)", ErrDealFieldUnsupported, field)
 		}
 		return nil
 	},

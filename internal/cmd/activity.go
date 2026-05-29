@@ -29,13 +29,13 @@ var activityLogCmd = &cobra.Command{
 		bodyFile, _ := cmd.Flags().GetString("body-file")
 
 		if contactID == "" {
-			return fmt.Errorf("--contact 是必需的")
+			return ErrActivityContactRequired
 		}
 		if summary == "" {
-			return fmt.Errorf("--summary 是必需的")
+			return ErrActivitySummaryRequired
 		}
 		if dedupeKey == "" {
-			return fmt.Errorf("--dedupe-key 是必需的")
+			return ErrActivityDedupeKeyRequired
 		}
 
 		s, err := getStore()
