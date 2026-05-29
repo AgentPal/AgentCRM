@@ -129,3 +129,112 @@ func TestI18N_ActivityChinese(t *testing.T) {
 		t.Errorf("expected Chinese activity list output, got: %s", out)
 	}
 }
+
+func TestI18N_AlertEnglish(t *testing.T) {
+	i18n.SetLang("en")
+
+	dir := t.TempDir()
+	_, err := executeCommand(t, "--data-dir", dir, "init")
+	if err != nil {
+		t.Fatalf("init failed: %v", err)
+	}
+
+	out, err := executeCommand(t, "--data-dir", dir, "alert", "list")
+	if err != nil {
+		t.Fatalf("alert list failed: %v\noutput: %s", err, out)
+	}
+	if !strings.Contains(out, "No pending alerts") {
+		t.Errorf("expected English alert list output, got: %s", out)
+	}
+}
+
+func TestI18N_AlertChinese(t *testing.T) {
+	i18n.SetLang("zh")
+
+	dir := t.TempDir()
+	_, err := executeCommand(t, "--data-dir", dir, "init")
+	if err != nil {
+		t.Fatalf("init failed: %v", err)
+	}
+
+	out, err := executeCommand(t, "--data-dir", dir, "alert", "list")
+	if err != nil {
+		t.Fatalf("alert list failed: %v\noutput: %s", err, out)
+	}
+	if !strings.Contains(out, "无待处理提醒") {
+		t.Errorf("expected Chinese alert list output, got: %s", out)
+	}
+}
+
+func TestI18N_EventsEnglish(t *testing.T) {
+	i18n.SetLang("en")
+
+	dir := t.TempDir()
+	_, err := executeCommand(t, "--data-dir", dir, "init")
+	if err != nil {
+		t.Fatalf("init failed: %v", err)
+	}
+
+	out, err := executeCommand(t, "--data-dir", dir, "events", "subscribers", "list")
+	if err != nil {
+		t.Fatalf("events subscribers list failed: %v\noutput: %s", err, out)
+	}
+	if !strings.Contains(out, "No subscribers") {
+		t.Errorf("expected English events subscribers list output, got: %s", out)
+	}
+}
+
+func TestI18N_EventsChinese(t *testing.T) {
+	i18n.SetLang("zh")
+
+	dir := t.TempDir()
+	_, err := executeCommand(t, "--data-dir", dir, "init")
+	if err != nil {
+		t.Fatalf("init failed: %v", err)
+	}
+
+	out, err := executeCommand(t, "--data-dir", dir, "events", "subscribers", "list")
+	if err != nil {
+		t.Fatalf("events subscribers list failed: %v\noutput: %s", err, out)
+	}
+	if !strings.Contains(out, "无订阅者") {
+		t.Errorf("expected Chinese events subscribers list output, got: %s", out)
+	}
+}
+
+func TestI18N_MemoryEnglish(t *testing.T) {
+	i18n.SetLang("en")
+
+	dir := t.TempDir()
+	_, err := executeCommand(t, "--data-dir", dir, "init")
+	if err != nil {
+		t.Fatalf("init failed: %v", err)
+	}
+
+	out, err := executeCommand(t, "--data-dir", dir, "memory", "list", "--scope", "contact:test")
+	if err != nil {
+		t.Fatalf("memory list failed: %v\noutput: %s", err, out)
+	}
+	if !strings.Contains(out, "No memories") {
+		t.Errorf("expected English memory list output, got: %s", out)
+	}
+}
+
+func TestI18N_MemoryChinese(t *testing.T) {
+	i18n.SetLang("zh")
+
+	dir := t.TempDir()
+	_, err := executeCommand(t, "--data-dir", dir, "init")
+	if err != nil {
+		t.Fatalf("init failed: %v", err)
+	}
+
+	out, err := executeCommand(t, "--data-dir", dir, "memory", "list", "--scope", "contact:test")
+	if err != nil {
+		t.Fatalf("memory list failed: %v\noutput: %s", err, out)
+	}
+	if !strings.Contains(out, "无记忆") {
+		t.Errorf("expected Chinese memory list output, got: %s", out)
+	}
+}
+

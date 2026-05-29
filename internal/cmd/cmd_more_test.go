@@ -262,7 +262,7 @@ func TestEvents_Subscribers(t *testing.T) {
 	if err != nil {
 		t.Fatalf("subscribers reset failed: %v\noutput: %s", err, out)
 	}
-	if !strings.Contains(out, "已重置") {
+	if !strings.Contains(out, "Reset") {
 		t.Errorf("unexpected reset output: %s", out)
 	}
 }
