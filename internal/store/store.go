@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/AgentPal/AgentCRM/internal/i18n"
 	"github.com/AgentPal/AgentCRM/internal/model"
 	"gopkg.in/yaml.v3"
 )
@@ -96,7 +97,7 @@ func (s *Store) Reindex() error {
 	for _, slug := range contactSlugs {
 		c, err := s.FS.ReadContact(slug)
 		if err != nil {
-			fmt.Printf("  ⚠ 跳过 %s: %v\n", slug, err)
+			fmt.Printf(i18n.T("output.io.skip_file")+"\n", slug, err)
 			continue
 		}
 		c.Slug = slug
@@ -135,7 +136,7 @@ func (s *Store) Reindex() error {
 			c.Source, c.CreatedAt)
 
 		if err != nil {
-			fmt.Printf("  ⚠ 写入联系人 %s 失败: %v\n", slug, err)
+			fmt.Printf(i18n.T("output.reindex.write_fail")+"\n", slug, err)
 			continue
 		}
 
@@ -153,7 +154,7 @@ func (s *Store) Reindex() error {
 	for _, file := range activityFiles {
 		activities, err := readActivityFile(file)
 		if err != nil {
-			fmt.Printf("  ⚠ 跳过活动文件 %s: %v\n", file, err)
+			fmt.Printf(i18n.T("output.io.skip_file")+"\n", file, err)
 			continue
 		}
 		for _, a := range activities {
@@ -168,7 +169,7 @@ func (s *Store) Reindex() error {
 				string(contactIDsJSON), string(dealIDsJSON), a.Summary, a.Body, a.Subject,
 				a.DedupeKey, a.SourceURL)
 			if err != nil {
-				fmt.Printf("  ⚠ 写入活动 %s 失败: %v\n", a.ID, err)
+				fmt.Printf(i18n.T("output.reindex.write_fail")+"\n", a.ID, err)
 				continue
 			}
 
@@ -191,7 +192,7 @@ func (s *Store) Reindex() error {
 		slug := strings.TrimSuffix(filepath.Base(file), ".md")
 		d, err := parseDealMarkdownFile(file)
 		if err != nil {
-			fmt.Printf("  ⚠ 跳过商机 %s: %v\n", slug, err)
+			fmt.Printf(i18n.T("output.io.skip_file")+"\n", slug, err)
 			continue
 		}
 		d.Slug = slug
@@ -215,12 +216,12 @@ func (s *Store) Reindex() error {
 			d.ID, slug, d.Title, d.Stage, d.Amount, d.Currency,
 			string(contactIDsJSON), d.ExpectedCloseAt, d.Owner, d.UpdatedAt, d.CreatedAt)
 		if err != nil {
-			fmt.Printf("  ⚠ 写入商机 %s 失败: %v\n", slug, err)
+			fmt.Printf(i18n.T("output.reindex.write_fail")+"\n", slug, err)
 			continue
 		}
 	}
 
-	fmt.Printf("重建完成: %d 联系人, %d 商机\n", len(contactSlugs), len(dealFiles))
+	fmt.Printf(i18n.T("output.reindex.done")+"\n", len(contactSlugs), len(dealFiles))
 	return nil
 }
 

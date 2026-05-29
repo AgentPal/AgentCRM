@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/AgentPal/AgentCRM/internal/i18n"
 	"github.com/AgentPal/AgentCRM/internal/model"
 )
 
@@ -287,7 +288,7 @@ func TextSimilarity(a, b string) float64 {
 func (s *MemoStore) Propose(scope, statement, sourceSnippet, actor string, confidence float64) (*model.Proposal, error) {
 	parts := strings.SplitN(scope, ":", 2)
 	if len(parts) != 2 {
-		return nil, fmt.Errorf("无效 scope 格式，应如 contact:<id>")
+		return nil, fmt.Errorf(i18n.T("error.memory.scope.format"))
 	}
 	scopeType, scopeID := parts[0], parts[1]
 
@@ -382,7 +383,7 @@ func (s *MemoStore) Commit(proposalID, action string) error {
 		}
 	case "reject":
 	default:
-		return fmt.Errorf("无效动作: %s (支持: supersede, keep-both, reject)", action)
+		return fmt.Errorf(i18n.T("error.memory.invalid_action"), action)
 	}
 
 	return nil
