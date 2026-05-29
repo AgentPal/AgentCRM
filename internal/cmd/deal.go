@@ -6,18 +6,19 @@ import (
 	"strings"
 	"time"
 
+	"github.com/AgentPal/AgentCRM/internal/i18n"
 	"github.com/AgentPal/AgentCRM/internal/model"
 	"github.com/spf13/cobra"
 )
 
 var dealCmd = &cobra.Command{
 	Use:   "deal",
-	Short: "管理商机",
+	Short: i18n.T("cmd.deal.short"),
 }
 
 var dealCreateCmd = &cobra.Command{
 	Use:   "create",
-	Short: "创建商机",
+	Short: i18n.T("cmd.deal.create.short"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		title, _ := cmd.Flags().GetString("title")
 		contactID, _ := cmd.Flags().GetString("contact")
@@ -76,9 +77,9 @@ var dealCreateCmd = &cobra.Command{
 			})
 			fmt.Println(string(out))
 		} else {
-			fmt.Printf("已创建商机: %s (%s)\n", d.Title, d.ID)
-			fmt.Printf("  金额: %d %s\n", d.Amount, d.Currency)
-			fmt.Printf("  阶段: %s\n", d.Stage)
+			fmt.Printf(i18n.T("output.deal.created")+"\n", d.Title, d.ID)
+			fmt.Printf(i18n.T("output.deal.created.amount")+"\n", d.Amount, d.Currency)
+			fmt.Printf(i18n.T("output.deal.created.stage")+"\n", d.Stage)
 		}
 		return nil
 	},
@@ -86,7 +87,7 @@ var dealCreateCmd = &cobra.Command{
 
 var dealUpdateCmd = &cobra.Command{
 	Use:   "update <id>",
-	Short: "更新商机字段（阶段/金额/其他）",
+	Short: i18n.T("cmd.deal.update.short"),
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		sets, _ := cmd.Flags().GetStringArray("set")
@@ -121,7 +122,7 @@ var dealUpdateCmd = &cobra.Command{
 				}
 				if d.Stage == value {
 					if format != "json" {
-						fmt.Printf("阶段已经是 %s\n", value)
+						fmt.Printf(i18n.T("output.deal.stage.current")+"\n", value)
 					}
 					continue
 				}
@@ -142,7 +143,7 @@ var dealUpdateCmd = &cobra.Command{
 					"id": args[0], "from": oldStage, "to": value, "reason": reason})
 
 				if format != "json" {
-					fmt.Printf("阶段: %s → %s", oldStage, value)
+					fmt.Printf(i18n.T("output.deal.stage.changed"), oldStage, value)
 					if reason != "" {
 						fmt.Printf(" (%s)", reason)
 					}
@@ -156,7 +157,7 @@ var dealUpdateCmd = &cobra.Command{
 				if d.Amount > 0 {
 					pct := float64(newAmt-d.Amount) / float64(d.Amount) * 100
 					if pct > 20 || pct < -20 {
-						fmt.Printf("⚠ 金额变动超过 20%%（%.0f%%），请确认\n", pct)
+						fmt.Printf(i18n.T("output.deal.amount.warning")+"\n", pct)
 					}
 				}
 
@@ -169,7 +170,7 @@ var dealUpdateCmd = &cobra.Command{
 					"id": args[0], "from": oldAmt, "to": value, "reason": reason})
 
 				if format != "json" {
-					fmt.Printf("金额: %d → %s", d.Amount, value)
+					fmt.Printf(i18n.T("output.deal.amount.changed"), oldAmt, value)
 					if reason != "" {
 						fmt.Printf(" (%s)", reason)
 					}
@@ -181,7 +182,7 @@ var dealUpdateCmd = &cobra.Command{
 					return err
 				}
 				if format != "json" {
-					fmt.Printf("%s 已更新\n", field)
+					fmt.Printf(i18n.T("output.deal.field.updated")+"\n", field)
 				}
 			}
 		}
@@ -191,7 +192,7 @@ var dealUpdateCmd = &cobra.Command{
 
 var dealListCmd = &cobra.Command{
 	Use:   "list",
-	Short: "列出商机",
+	Short: i18n.T("cmd.deal.list.short"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		stage, _ := cmd.Flags().GetString("stage")
 		stageNotIn, _ := cmd.Flags().GetString("stage-not-in")
@@ -213,7 +214,7 @@ var dealListCmd = &cobra.Command{
 			fmt.Println(string(out))
 		} else {
 			if len(results) == 0 {
-				fmt.Println("无商机")
+				fmt.Println(i18n.T("output.deal.list.none"))
 				return nil
 			}
 			for _, r := range results {
@@ -223,7 +224,7 @@ var dealListCmd = &cobra.Command{
 				}
 				fmt.Println()
 			}
-			fmt.Printf("\n共 %d 个商机\n", len(results))
+			fmt.Print(i18n.Tn("output.deal.list.count", len(results)))
 		}
 		return nil
 	},
@@ -231,7 +232,7 @@ var dealListCmd = &cobra.Command{
 
 var dealGetCmd = &cobra.Command{
 	Use:   "get <id>",
-	Short: "获取商机详情",
+	Short: i18n.T("cmd.deal.get.short"),
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		asOf, _ := cmd.Flags().GetString("as-of")
@@ -260,20 +261,20 @@ var dealGetCmd = &cobra.Command{
 			fmt.Println(string(out))
 		} else {
 			if asOf != "" {
-				fmt.Printf("[时间点: %s]\n", asOf)
+				fmt.Printf(i18n.T("output.deal.get.as_of")+"\n", asOf)
 			}
 			fmt.Printf("ID: %s\n", d.ID)
-			fmt.Printf("名称: %s\n", d.Title)
-			fmt.Printf("阶段: %s\n", d.Stage)
-			fmt.Printf("金额: %d %s\n", d.Amount, d.Currency)
+			fmt.Printf(i18n.T("output.deal.get.title")+"\n", d.Title)
+			fmt.Printf(i18n.T("output.deal.get.stage")+"\n", d.Stage)
+			fmt.Printf(i18n.T("output.deal.get.amount")+"\n", d.Amount, d.Currency)
 			if d.ExpectedCloseAt != "" {
-				fmt.Printf("预计成交: %s\n", d.ExpectedCloseAt[:10])
+				fmt.Printf(i18n.T("output.deal.get.close_date")+"\n", d.ExpectedCloseAt[:10])
 			}
 			if len(d.ContactIDs) > 0 {
-				fmt.Printf("联系人: %s\n", strings.Join(d.ContactIDs, ", "))
+				fmt.Printf(i18n.T("output.deal.get.contacts")+"\n", strings.Join(d.ContactIDs, ", "))
 			}
 			if len(d.StageHistory) > 0 {
-				fmt.Printf("阶段历程:\n")
+				fmt.Printf(i18n.T("output.deal.get.stage_history") + "\n")
 				for _, h := range d.StageHistory {
 					fmt.Printf("  %s (%s)", h.Stage, h.EnteredAt)
 					if h.By != "" {
@@ -289,7 +290,7 @@ var dealGetCmd = &cobra.Command{
 
 var dealHistoryCmd = &cobra.Command{
 	Use:   "history <id>",
-	Short: "查看商机字段历史",
+	Short: i18n.T("cmd.deal.history.short"),
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		field, _ := cmd.Flags().GetString("field")
@@ -315,7 +316,7 @@ var dealHistoryCmd = &cobra.Command{
 		switch field {
 		case "stage":
 			if len(d.StageHistory) == 0 {
-				fmt.Println("无阶段历史")
+				fmt.Println(i18n.T("output.deal.history.stage_none"))
 				return nil
 			}
 			if format == "json" {
@@ -335,7 +336,7 @@ var dealHistoryCmd = &cobra.Command{
 			}
 		case "amount":
 			if len(d.AmountHistory) == 0 {
-				fmt.Println("无金额历史")
+				fmt.Println(i18n.T("output.deal.history.amount_none"))
 				return nil
 			}
 			if format == "json" {
@@ -346,7 +347,7 @@ var dealHistoryCmd = &cobra.Command{
 			for _, h := range d.AmountHistory {
 				to := h.To
 				if to == "~" || to == "" {
-					to = "至今"
+					to = i18n.T("output.deal.history.to")
 				}
 				fmt.Printf("amount: %d (from: %s, to: %s)", h.Value, h.From, to)
 				if h.Reason != "" {
@@ -363,7 +364,7 @@ var dealHistoryCmd = &cobra.Command{
 
 var dealSummarizeCmd = &cobra.Command{
 	Use:   "summarize <id>",
-	Short: "生成商机自然语言总结",
+	Short: i18n.T("cmd.deal.summarize.short"),
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		s, err := getStore()
@@ -394,8 +395,8 @@ var dealSummarizeCmd = &cobra.Command{
 			daysSinceCreated = 0
 		}
 
-		fmt.Printf("商机: %s\n", d.Title)
-		fmt.Printf("当前阶段: %s", d.Stage)
+		fmt.Printf(i18n.T("output.deal.summarize.title")+"\n", d.Title)
+		fmt.Printf(i18n.T("output.deal.summarize.stage"), d.Stage)
 		if len(df.StageHistory) > 0 {
 			lastStage := df.StageHistory[len(df.StageHistory)-1]
 			entered, _ := time.Parse("2006-01-02", lastStage.EnteredAt)
@@ -403,23 +404,23 @@ var dealSummarizeCmd = &cobra.Command{
 			if daysInStage < 0 {
 				daysInStage = 0
 			}
-			fmt.Printf(" (已停留 %d 天)", daysInStage)
+			fmt.Printf(i18n.T("output.deal.summarize.stage_days"), daysInStage)
 		}
 		fmt.Println()
-		fmt.Printf("金额: %d %s\n", d.Amount, d.Currency)
-		fmt.Printf("创建: %d 天前\n", daysSinceCreated)
+		fmt.Printf(i18n.T("output.deal.summarize.amount")+"\n", d.Amount, d.Currency)
+		fmt.Printf(i18n.T("output.deal.summarize.created_days")+"\n", daysSinceCreated)
 		if d.ExpectedCloseAt != "" {
-			fmt.Printf("预计成交: %s\n", d.ExpectedCloseAt[:10])
+			fmt.Printf(i18n.T("output.deal.summarize.close_date")+"\n", d.ExpectedCloseAt[:10])
 		}
 		if d.Owner != "" {
-			fmt.Printf("负责人: %s\n", d.Owner)
+			fmt.Printf(i18n.T("output.deal.summarize.owner")+"\n", d.Owner)
 		}
 		if len(df.StageHistory) > 1 {
 			history := make([]string, len(df.StageHistory))
 			for i, h := range df.StageHistory {
 				history[i] = h.Stage
 			}
-			fmt.Printf("阶段历程: %s\n", strings.Join(history, " → "))
+			fmt.Printf(i18n.T("output.deal.summarize.history")+"\n", strings.Join(history, " → "))
 		}
 		return nil
 	},
@@ -433,22 +434,22 @@ func init() {
 	dealCmd.AddCommand(dealHistoryCmd)
 	dealCmd.AddCommand(dealSummarizeCmd)
 
-	dealCreateCmd.Flags().String("title", "", "商机名称（必需）")
-	dealCreateCmd.Flags().String("contact", "", "关联联系人 ID")
-	dealCreateCmd.Flags().Int("amount", 0, "金额")
-	dealCreateCmd.Flags().String("currency", "CNY", "币种")
-	dealCreateCmd.Flags().String("stage", "lead", "起始阶段")
+	dealCreateCmd.Flags().String("title", "", i18n.T("flag.deal.title"))
+	dealCreateCmd.Flags().String("contact", "", i18n.T("flag.deal.contact"))
+	dealCreateCmd.Flags().Int("amount", 0, i18n.T("flag.deal.amount"))
+	dealCreateCmd.Flags().String("currency", "CNY", i18n.T("flag.deal.currency"))
+	dealCreateCmd.Flags().String("stage", "lead", i18n.T("flag.deal.stage"))
 
-	dealUpdateCmd.Flags().StringArray("set", nil, "设置字段 (field=value)")
-	dealUpdateCmd.Flags().String("reason", "", "变更原因")
+	dealUpdateCmd.Flags().StringArray("set", nil, i18n.T("flag.deal.set"))
+	dealUpdateCmd.Flags().String("reason", "", i18n.T("flag.deal.reason"))
 
-	dealListCmd.Flags().String("stage", "", "按阶段过滤")
-	dealListCmd.Flags().String("stage-not-in", "", "排除的阶段（逗号分隔）")
-	dealListCmd.Flags().String("owner", "", "按负责人过滤")
+	dealListCmd.Flags().String("stage", "", i18n.T("flag.deal.stage_filter"))
+	dealListCmd.Flags().String("stage-not-in", "", i18n.T("flag.deal.stage_not_in"))
+	dealListCmd.Flags().String("owner", "", i18n.T("flag.deal.owner"))
 
-	dealGetCmd.Flags().String("as-of", "", "查看指定时间点的数据")
+	dealGetCmd.Flags().String("as-of", "", i18n.T("flag.deal.as_of"))
 
-	dealHistoryCmd.Flags().String("field", "", "字段名")
+	dealHistoryCmd.Flags().String("field", "", i18n.T("flag.deal.field"))
 }
 
 func split2(s, sep string) []string {
