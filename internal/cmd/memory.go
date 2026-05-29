@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/AgentPal/AgentCRM/internal/i18n"
 	"github.com/AgentPal/AgentCRM/internal/model"
 	"github.com/AgentPal/AgentCRM/internal/search"
 	"github.com/spf13/cobra"
@@ -12,12 +13,12 @@ import (
 
 var memoryCmd = &cobra.Command{
 	Use:   "memory",
-	Short: "管理长期记忆",
+	Short: i18n.T("cmd.memory.short"),
 }
 
 var memoryWriteCmd = &cobra.Command{
 	Use:   "write",
-	Short: "写入记忆",
+	Short: i18n.T("cmd.memory.write.short"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		scope, _ := cmd.Flags().GetString("scope")
 		text, _ := cmd.Flags().GetString("text")
@@ -30,7 +31,7 @@ var memoryWriteCmd = &cobra.Command{
 
 		scopeType, scopeID := parseScope(scope)
 		if scopeType == "" {
-			return fmt.Errorf("invalid scope format, expected contact:<id>")
+			return fmt.Errorf(i18n.T("error.memory.scope.format"))
 		}
 
 		s, err := getStore()
@@ -56,7 +57,7 @@ var memoryWriteCmd = &cobra.Command{
 			out, _ := json.Marshal(map[string]string{"id": m.ID})
 			fmt.Println(string(out))
 		} else {
-			fmt.Printf("已写入记忆: %s\n", m.ID)
+			fmt.Println(i18n.T("output.memory.written", m.ID))
 		}
 		return nil
 	},
@@ -64,7 +65,7 @@ var memoryWriteCmd = &cobra.Command{
 
 var memoryListCmd = &cobra.Command{
 	Use:   "list",
-	Short: "列出记忆",
+	Short: i18n.T("cmd.memory.list.short"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		scope, _ := cmd.Flags().GetString("scope")
 		if scope == "" {
@@ -89,13 +90,13 @@ var memoryListCmd = &cobra.Command{
 			fmt.Println(string(out))
 		} else {
 			if len(memos) == 0 {
-				fmt.Println("无记忆")
+				fmt.Println(i18n.T("output.memory.list.none"))
 				return nil
 			}
 			for _, m := range memos {
 				status := ""
 				if m.Expired {
-					status = " [过期]"
+					status = i18n.T("output.memory.list.expired")
 				}
 				fmt.Printf("- %s%s\n", m.Text, status)
 			}
@@ -106,7 +107,7 @@ var memoryListCmd = &cobra.Command{
 
 var memoryRecallCmd = &cobra.Command{
 	Use:   "recall <query>",
-	Short: "检索记忆",
+	Short: i18n.T("cmd.memory.recall.short"),
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		scope, _ := cmd.Flags().GetString("scope")
@@ -158,7 +159,7 @@ var memoryRecallCmd = &cobra.Command{
 			fmt.Println(string(out))
 		} else {
 			if len(results) == 0 {
-				fmt.Println("未找到匹配的记忆")
+				fmt.Println(i18n.T("output.memory.recall.none"))
 				return nil
 			}
 			for _, m := range results {
@@ -175,7 +176,7 @@ var memoryRecallCmd = &cobra.Command{
 
 var memoryForgetCmd = &cobra.Command{
 	Use:   "forget <memo-id>",
-	Short: "删除记忆",
+	Short: i18n.T("cmd.memory.forget.short"),
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		s, err := getStore()
@@ -187,14 +188,14 @@ var memoryForgetCmd = &cobra.Command{
 		if err := s.Memos.Delete(args[0]); err != nil {
 			return err
 		}
-		fmt.Println("已删除记忆")
+		fmt.Println(i18n.T("output.memory.forget.ok"))
 		return nil
 	},
 }
 
 var memoryProposeCmd = &cobra.Command{
 	Use:   "propose",
-	Short: "提议新的记忆（带矛盾检测）",
+	Short: i18n.T("cmd.memory.propose.short"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		scope, _ := cmd.Flags().GetString("scope")
 		statement, _ := cmd.Flags().GetString("statement")
@@ -224,13 +225,13 @@ var memoryProposeCmd = &cobra.Command{
 			out, _ := json.Marshal(p)
 			fmt.Println(string(out))
 		} else {
-			fmt.Printf("提议已记录: %s (status: %s)\n", p.ID, p.Status)
+			fmt.Println(i18n.T("output.memory.propose.recorded", p.ID, p.Status))
 			if p.Status == "conflict" {
-				fmt.Printf("  检测到 %d 条冲突:\n", len(p.ConflictWith))
+				fmt.Println(i18n.T("output.memory.propose.conflicts", len(p.ConflictWith)))
 				for _, c := range p.ConflictWith {
 					fmt.Printf("    - %s\n", c.Text)
 				}
-				fmt.Printf("  建议动作: %s\n", p.SuggestedAction)
+				fmt.Println(i18n.T("output.memory.propose.suggested_action", p.SuggestedAction))
 			}
 		}
 		return nil
@@ -239,7 +240,7 @@ var memoryProposeCmd = &cobra.Command{
 
 var memoryCommitCmd = &cobra.Command{
 	Use:   "commit",
-	Short: "提交/裁决提议",
+	Short: i18n.T("cmd.memory.commit.short"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		proposalID, _ := cmd.Flags().GetString("proposal-id")
 		action, _ := cmd.Flags().GetString("action")
@@ -258,14 +259,14 @@ var memoryCommitCmd = &cobra.Command{
 			return err
 		}
 
-		fmt.Printf("已处理提议 %s (action: %s)\n", proposalID, action)
+		fmt.Println(i18n.T("output.memory.commit.done", proposalID, action))
 		return nil
 	},
 }
 
 var memoryDecayScanCmd = &cobra.Command{
 	Use:   "decay-scan",
-	Short: "扫描并标记过期记忆",
+	Short: i18n.T("cmd.memory.decay.short"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		dryRun, _ := cmd.Flags().GetBool("dry-run")
 
@@ -281,9 +282,9 @@ var memoryDecayScanCmd = &cobra.Command{
 		}
 
 		if dryRun {
-			fmt.Printf("发现 %d 条将要过期的记忆（预览模式，未实际标记）\n", count)
+			fmt.Println(i18n.T("output.memory.decay.preview", count))
 		} else {
-			fmt.Printf("已标记 %d 条过期记忆\n", count)
+			fmt.Println(i18n.T("output.memory.decay.done", count))
 		}
 		return nil
 	},
@@ -306,24 +307,24 @@ func init() {
 	memoryCmd.AddCommand(memoryCommitCmd)
 	memoryCmd.AddCommand(memoryDecayScanCmd)
 
-	memoryWriteCmd.Flags().String("scope", "", "作用域 (contact:<id> 或 deal:<id>)")
-	memoryWriteCmd.Flags().String("text", "", "记忆内容")
-	memoryWriteCmd.Flags().String("decay", "180d", "衰减策略")
-	memoryWriteCmd.Flags().String("valid-from", "", "生效时间")
+	memoryWriteCmd.Flags().String("scope", "", i18n.T("flag.memory.scope"))
+	memoryWriteCmd.Flags().String("text", "", i18n.T("flag.memory.text"))
+	memoryWriteCmd.Flags().String("decay", "180d", i18n.T("flag.memory.decay"))
+	memoryWriteCmd.Flags().String("valid-from", "", i18n.T("flag.memory.valid_from"))
 
-	memoryListCmd.Flags().String("scope", "", "作用域")
+	memoryListCmd.Flags().String("scope", "", i18n.T("flag.memory.scope"))
 
-	memoryRecallCmd.Flags().String("scope", "", "作用域")
-	memoryRecallCmd.Flags().Int("top-k", 5, "返回数量上限")
-	memoryRecallCmd.Flags().String("as-of", "", "查看指定时间点")
+	memoryRecallCmd.Flags().String("scope", "", i18n.T("flag.memory.scope"))
+	memoryRecallCmd.Flags().Int("top-k", 5, i18n.T("flag.memory.top_k"))
+	memoryRecallCmd.Flags().String("as-of", "", i18n.T("flag.memory.as_of"))
 
-	memoryProposeCmd.Flags().String("scope", "", "作用域")
-	memoryProposeCmd.Flags().String("statement", "", "陈述内容")
-	memoryProposeCmd.Flags().String("source-snippet", "", "来源原文片段")
-	memoryProposeCmd.Flags().Float64("confidence", 0.8, "置信度 (0-1)")
+	memoryProposeCmd.Flags().String("scope", "", i18n.T("flag.memory.scope"))
+	memoryProposeCmd.Flags().String("statement", "", i18n.T("flag.memory.statement"))
+	memoryProposeCmd.Flags().String("source-snippet", "", i18n.T("flag.memory.source_snippet"))
+	memoryProposeCmd.Flags().Float64("confidence", 0.8, i18n.T("flag.memory.confidence"))
 
-	memoryCommitCmd.Flags().String("proposal-id", "", "提议 ID")
-	memoryCommitCmd.Flags().String("action", "", "动作: supersede|keep-both|reject")
+	memoryCommitCmd.Flags().String("proposal-id", "", i18n.T("flag.memory.proposal_id"))
+	memoryCommitCmd.Flags().String("action", "", i18n.T("flag.memory.action"))
 
-	memoryDecayScanCmd.Flags().Bool("dry-run", false, "仅预览不执行")
+	memoryDecayScanCmd.Flags().Bool("dry-run", false, i18n.T("flag.memory.dry_run"))
 }

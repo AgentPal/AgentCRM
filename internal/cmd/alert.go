@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/AgentPal/AgentCRM/internal/alert"
+	"github.com/AgentPal/AgentCRM/internal/i18n"
 	"github.com/AgentPal/AgentCRM/internal/model"
 	"github.com/AgentPal/AgentCRM/internal/store"
 	"github.com/spf13/cobra"
@@ -17,12 +18,12 @@ import (
 // alertCmd 管理提醒。
 var alertCmd = &cobra.Command{
 	Use:   "alert",
-	Short: "管理提醒",
+	Short: i18n.T("cmd.alert.short"),
 }
 
 var alertScanCmd = &cobra.Command{
 	Use:   "scan",
-	Short: "扫描并生成提醒",
+	Short: i18n.T("cmd.alert.scan.short"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		sinceLast, _ := cmd.Flags().GetBool("since-last-scan")
 
@@ -44,7 +45,7 @@ var alertScanCmd = &cobra.Command{
 		}
 
 		if sinceLast && len(active) > 0 {
-			fmt.Printf("存在 %d 条未处理提醒，跳过扫描\n", len(active))
+			fmt.Println(i18n.T("output.alert.scan.active", len(active)))
 			return nil
 		}
 
@@ -65,22 +66,22 @@ var alertScanCmd = &cobra.Command{
 			fmt.Println(string(out))
 		} else {
 			if len(alerts) == 0 {
-				fmt.Println("未发现新问题")
+				fmt.Println(i18n.T("output.alert.scan.none"))
 				return nil
 			}
 			for _, a := range alerts {
 				fmt.Printf("[%s] %s\n", a.RuleName, a.Title)
 				if a.Suggestion != "" {
-					fmt.Printf("  建议: %s\n", a.Suggestion)
+					fmt.Println(i18n.T("output.alert.scan.suggestion", a.Suggestion))
 				}
 				if a.ContactName != "" {
-					fmt.Printf("  联系人: %s\n", a.ContactName)
+					fmt.Println(i18n.T("output.alert.scan.contact", a.ContactName))
 				}
 				if a.DealTitle != "" {
-					fmt.Printf("  商机: %s\n", a.DealTitle)
+					fmt.Println(i18n.T("output.alert.scan.deal", a.DealTitle))
 				}
 			}
-			fmt.Printf("\n发现 %d 个新提醒\n", len(alerts))
+			fmt.Print(i18n.T("output.alert.scan.count", len(alerts)))
 		}
 		return nil
 	},
@@ -88,7 +89,7 @@ var alertScanCmd = &cobra.Command{
 
 var alertListCmd = &cobra.Command{
 	Use:   "list",
-	Short: "列出当前提醒",
+	Short: i18n.T("cmd.alert.list.short"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		s, err := getStore()
 		if err != nil {
@@ -113,7 +114,7 @@ var alertListCmd = &cobra.Command{
 			fmt.Println(string(out))
 		} else {
 			if len(pending) == 0 {
-				fmt.Println("无待处理提醒")
+				fmt.Println(i18n.T("output.alert.list.pending"))
 				return nil
 			}
 			for _, a := range pending {
@@ -122,7 +123,7 @@ var alertListCmd = &cobra.Command{
 					fmt.Printf("  建议: %s\n", a.Suggestion)
 				}
 			}
-			fmt.Printf("\n共 %d 条待处理提醒\n", len(pending))
+			fmt.Print(i18n.T("output.alert.list.count", len(pending)))
 		}
 		return nil
 	},
@@ -130,7 +131,7 @@ var alertListCmd = &cobra.Command{
 
 var alertDismissCmd = &cobra.Command{
 	Use:   "dismiss <id>",
-	Short: "忽略一条提醒",
+	Short: i18n.T("cmd.alert.dismiss.short"),
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		permanent, _ := cmd.Flags().GetBool("permanent")
@@ -161,20 +162,20 @@ var alertDismissCmd = &cobra.Command{
 		}
 
 		if !found {
-			return fmt.Errorf("提醒未找到: %s", args[0])
+			return fmt.Errorf(i18n.T("error.alert.not_found"), args[0])
 		}
 
 		if err := s.FS.WritePendingAlerts(alerts); err != nil {
 			return err
 		}
-		fmt.Println("已忽略提醒")
+		fmt.Println(i18n.T("output.alert.dismiss.ok"))
 		return nil
 	},
 }
 
 var alertSnoozeCmd = &cobra.Command{
 	Use:   "snooze <id>",
-	Short: "推迟提醒",
+	Short: i18n.T("cmd.alert.snooze.short"),
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		days, _ := cmd.Flags().GetInt("days")
@@ -202,13 +203,13 @@ var alertSnoozeCmd = &cobra.Command{
 		}
 
 		if !found {
-			return fmt.Errorf("提醒未找到: %s", args[0])
+			return fmt.Errorf(i18n.T("error.alert.not_found"), args[0])
 		}
 
 		if err := s.FS.WritePendingAlerts(alerts); err != nil {
 			return err
 		}
-		fmt.Printf("已推迟提醒 %d 天\n", days)
+		fmt.Println(i18n.T("output.alert.snooze.ok", days))
 		return nil
 	},
 }
@@ -216,12 +217,12 @@ var alertSnoozeCmd = &cobra.Command{
 // ruleCmd 管理规则。
 var ruleCmd = &cobra.Command{
 	Use:   "rule",
-	Short: "管理提醒规则",
+	Short: i18n.T("cmd.alert.rule.short"),
 }
 
 var ruleListCmd = &cobra.Command{
 	Use:   "list",
-	Short: "列出规则",
+	Short: i18n.T("cmd.alert.rule.list.short"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		rules := alert.BuiltinRules()
 
@@ -229,7 +230,7 @@ var ruleListCmd = &cobra.Command{
 			out, _ := json.Marshal(rules)
 			fmt.Println(string(out))
 		} else {
-			fmt.Println("内置规则:")
+			fmt.Println(i18n.T("output.alert.rule.builtin"))
 			for _, r := range rules {
 				fmt.Printf("  %s: %s\n", r.Name, r.Then.Alert.Title)
 			}
@@ -241,7 +242,7 @@ var ruleListCmd = &cobra.Command{
 				if err == nil {
 					var cfg model.RulesConfig
 					if yaml.Unmarshal(data, &cfg) == nil && len(cfg.Rules) > 0 {
-						fmt.Println("\n用户规则:")
+						fmt.Println(i18n.T("output.alert.rule.custom"))
 						for _, r := range cfg.Rules {
 							fmt.Printf("  %s: %s\n", r.Name, r.Then.Alert.Title)
 						}
@@ -256,7 +257,7 @@ var ruleListCmd = &cobra.Command{
 
 var ruleAddCmd = &cobra.Command{
 	Use:   "add",
-	Short: "添加规则",
+	Short: i18n.T("cmd.alert.rule.add.short"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fromYAML, _ := cmd.Flags().GetString("from-yaml")
 
@@ -277,7 +278,7 @@ var ruleAddCmd = &cobra.Command{
 			return fmt.Errorf("parse yaml: %w", err)
 		}
 		if len(cfg.Rules) == 0 {
-			return fmt.Errorf("规则文件为空")
+			return fmt.Errorf(i18n.T("error.alert.rule.empty"))
 		}
 
 		userPath := filepath.Join(s.ConfigDir(), "rules", "user.yaml")
@@ -288,14 +289,14 @@ var ruleAddCmd = &cobra.Command{
 			return fmt.Errorf("write user rules: %w", err)
 		}
 
-		fmt.Printf("已添加 %d 条规则\n", len(cfg.Rules))
+		fmt.Println(i18n.T("output.alert.rule.added", len(cfg.Rules)))
 		return nil
 	},
 }
 
 var ruleDisableCmd = &cobra.Command{
 	Use:   "disable <name>",
-	Short: "禁用规则",
+	Short: i18n.T("cmd.alert.rule.disable.short"),
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// 禁用方式：添加 disabled 规则到 user.yaml
@@ -314,7 +315,7 @@ var ruleDisableCmd = &cobra.Command{
 		defer f.Close()
 		fmt.Fprintf(f, "%s\n", args[0])
 
-		fmt.Printf("已禁用规则: %s\n", args[0])
+		fmt.Println(i18n.T("output.alert.rule.disabled", args[0]))
 		return nil
 	},
 }
@@ -329,10 +330,10 @@ func init() {
 	ruleCmd.AddCommand(ruleAddCmd)
 	ruleCmd.AddCommand(ruleDisableCmd)
 
-	alertScanCmd.Flags().Bool("since-last-scan", false, "仅上次扫描后的新数据")
-	alertDismissCmd.Flags().Bool("permanent", false, "永久忽略")
-	alertDismissCmd.Flags().String("reason", "", "忽略原因")
-	alertSnoozeCmd.Flags().Int("days", 7, "推迟天数")
+	alertScanCmd.Flags().Bool("since-last-scan", false, i18n.T("flag.alert.since_last_scan"))
+	alertDismissCmd.Flags().Bool("permanent", false, i18n.T("flag.alert.permanent"))
+	alertDismissCmd.Flags().String("reason", "", i18n.T("flag.alert.reason"))
+	alertSnoozeCmd.Flags().Int("days", 7, i18n.T("flag.alert.days"))
 
-	ruleAddCmd.Flags().String("from-yaml", "", "YAML 文件路径")
+	ruleAddCmd.Flags().String("from-yaml", "", i18n.T("flag.alert.from_yaml"))
 }
