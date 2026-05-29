@@ -252,6 +252,39 @@ func TestTn_Simple(t *testing.T) {
 	}
 }
 
+func TestTn_PluralWorking(t *testing.T) {
+	// English: n=1 uses base key (singular), n≠1 uses .plural key
+	MustInit("en")
+
+	got1 := Tn("output.activity.timeline.count", 1)
+	if strings.Contains(got1, "activities") {
+		t.Errorf("n=1 should use singular, got: %q", got1)
+	}
+	if !strings.Contains(got1, "1") {
+		t.Errorf("expected count 1 in output, got: %q", got1)
+	}
+
+	gotN := Tn("output.activity.timeline.count", 3)
+	if !strings.Contains(gotN, "3 activities") {
+		t.Errorf("n=3 should use plural '3 activities', got: %q", gotN)
+	}
+
+	// Chinese: always uses base key regardless of n
+	MustInit("zh")
+
+	gotZH1 := Tn("output.activity.timeline.count", 1)
+	gotZH3 := Tn("output.activity.timeline.count", 3)
+
+	if !strings.Contains(gotZH1, "共") || !strings.Contains(gotZH1, "1") {
+		t.Errorf("unexpected zh n=1: %q", gotZH1)
+	}
+	if !strings.Contains(gotZH3, "共") || !strings.Contains(gotZH3, "3") {
+		t.Errorf("unexpected zh n=3: %q", gotZH3)
+	}
+
+	MustInit("en")
+}
+
 // ---------------------------------------------------------------------------
 // TestKnownLangs
 // ---------------------------------------------------------------------------

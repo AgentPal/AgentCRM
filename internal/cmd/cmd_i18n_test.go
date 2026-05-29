@@ -57,3 +57,75 @@ func TestI18N_EnglishDefault(t *testing.T) {
 		t.Errorf("expected English contact list output, got: %s", out)
 	}
 }
+
+func TestI18N_DealEnglish(t *testing.T) {
+	i18n.SetLang("en")
+
+	dir := t.TempDir()
+	_, err := executeCommand(t, "--data-dir", dir, "init")
+	if err != nil {
+		t.Fatalf("init failed: %v", err)
+	}
+
+	out, err := executeCommand(t, "--data-dir", dir, "deal", "list")
+	if err != nil {
+		t.Fatalf("deal list failed: %v\noutput: %s", err, out)
+	}
+	if !strings.Contains(out, "No deals") {
+		t.Errorf("expected English deal list output, got: %s", out)
+	}
+}
+
+func TestI18N_DealChinese(t *testing.T) {
+	i18n.SetLang("zh")
+
+	dir := t.TempDir()
+	_, err := executeCommand(t, "--data-dir", dir, "init")
+	if err != nil {
+		t.Fatalf("init failed: %v", err)
+	}
+
+	out, err := executeCommand(t, "--data-dir", dir, "deal", "list")
+	if err != nil {
+		t.Fatalf("deal list failed: %v\noutput: %s", err, out)
+	}
+	if !strings.Contains(out, "无商机") {
+		t.Errorf("expected Chinese deal list output, got: %s", out)
+	}
+}
+
+func TestI18N_ActivityEnglish(t *testing.T) {
+	i18n.SetLang("en")
+
+	dir := t.TempDir()
+	_, err := executeCommand(t, "--data-dir", dir, "init")
+	if err != nil {
+		t.Fatalf("init failed: %v", err)
+	}
+
+	out, err := executeCommand(t, "--data-dir", dir, "activity", "list")
+	if err != nil {
+		t.Fatalf("activity list failed: %v\noutput: %s", err, out)
+	}
+	if !strings.Contains(out, "No activities") {
+		t.Errorf("expected English activity list output, got: %s", out)
+	}
+}
+
+func TestI18N_ActivityChinese(t *testing.T) {
+	i18n.SetLang("zh")
+
+	dir := t.TempDir()
+	_, err := executeCommand(t, "--data-dir", dir, "init")
+	if err != nil {
+		t.Fatalf("init failed: %v", err)
+	}
+
+	out, err := executeCommand(t, "--data-dir", dir, "activity", "list")
+	if err != nil {
+		t.Fatalf("activity list failed: %v\noutput: %s", err, out)
+	}
+	if !strings.Contains(out, "无活动记录") {
+		t.Errorf("expected Chinese activity list output, got: %s", out)
+	}
+}
