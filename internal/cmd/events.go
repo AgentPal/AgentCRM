@@ -16,7 +16,7 @@ import (
 // eventsCmd 管理事件订阅。
 var eventsCmd = &cobra.Command{
 	Use:   "events",
-	Short: i18n.T("cmd.events.short")（多 Agent 协作）",
+	Short: i18n.T("cmd.events.short"),
 }
 
 var eventsPollCmd = &cobra.Command{
@@ -107,7 +107,7 @@ var eventsAckCmd = &cobra.Command{
 
 var eventsWatchCmd = &cobra.Command{
 	Use:   "watch",
-	Short: i18n.T("cmd.events.watch.short")（阻塞式轮询）",
+	Short: i18n.T("cmd.events.watch.short"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		as, _ := cmd.Flags().GetString("as")
 		filter, _ := cmd.Flags().GetString("filter")
