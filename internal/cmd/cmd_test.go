@@ -551,7 +551,7 @@ func TestEvents(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ack failed: %v\noutput: %s", err, out)
 	}
-	if !strings.Contains(out, "已推进") {
+	if !strings.Contains(out, "Advanced") {
 		t.Errorf("unexpected ack output: %s", out)
 	}
 	_ = lastSeq
