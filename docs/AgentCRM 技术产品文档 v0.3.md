@@ -557,8 +557,7 @@ CREATE VIRTUAL TABLE memos_fts USING fts5(id, text, content='');
     "timezone": "Asia/Shanghai"
   },
   "memory": {
-    "default_decay": "180d",
-    "preserve_patterns": ["决策*", "偏好*", "* 性格*"]
+    "default_decay": "180d"
   },
   "search": {
     "strategies": ["fts", "entity", "temporal"],
