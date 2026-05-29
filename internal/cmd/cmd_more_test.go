@@ -92,7 +92,7 @@ END:VCARD`
 	if err != nil {
 		t.Fatalf("import vcard failed: %v\noutput: %s", err, out)
 	}
-	if !strings.Contains(out, "已导入") {
+	if !strings.Contains(out, "Imported") {
 		t.Errorf("unexpected output: %s", out)
 	}
 
@@ -133,7 +133,7 @@ func TestImportCSV(t *testing.T) {
 	if err != nil {
 		t.Fatalf("import csv failed: %v\noutput: %s", err, out)
 	}
-	if !strings.Contains(out, "已导入") {
+	if !strings.Contains(out, "Imported") {
 		t.Errorf("unexpected output: %s", out)
 	}
 
