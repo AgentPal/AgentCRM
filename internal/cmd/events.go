@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/AgentPal/AgentCRM/internal/i18n"
 	"github.com/AgentPal/AgentCRM/internal/model"
 	"github.com/spf13/cobra"
 )
@@ -15,12 +16,12 @@ import (
 // eventsCmd 管理事件订阅。
 var eventsCmd = &cobra.Command{
 	Use:   "events",
-	Short: "管理事件订阅（多 Agent 协作）",
+	Short: i18n.T("cmd.events.short")（多 Agent 协作）",
 }
 
 var eventsPollCmd = &cobra.Command{
 	Use:   "poll",
-	Short: "拉取新事件",
+	Short: i18n.T("cmd.events.poll.short"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		as, _ := cmd.Flags().GetString("as")
 		filter, _ := cmd.Flags().GetString("filter")
@@ -59,13 +60,13 @@ var eventsPollCmd = &cobra.Command{
 			fmt.Println(string(out))
 		} else {
 			if len(events) == 0 {
-				fmt.Println("无新事件")
+				fmt.Println(i18n.T("output.events.poll.none"))
 				return nil
 			}
 			for _, e := range events {
 				fmt.Printf("#%d [%s] %s by %s\n", e.Seq, e.TS[:16], e.Type, e.Actor)
 			}
-			fmt.Printf("\n共 %d 个事件 (cursor: %d)\n", len(events), sc.LastSeq)
+			fmt.Print(i18n.T("output.events.poll.count", len(events), sc.LastSeq))
 		}
 		return nil
 	},
@@ -73,7 +74,7 @@ var eventsPollCmd = &cobra.Command{
 
 var eventsAckCmd = &cobra.Command{
 	Use:   "ack",
-	Short: "推进事件 cursor",
+	Short: i18n.T("cmd.events.ack.short"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		as, _ := cmd.Flags().GetString("as")
 		upToSeq, _ := cmd.Flags().GetInt64("up-to-seq")
@@ -99,14 +100,14 @@ var eventsAckCmd = &cobra.Command{
 			return err
 		}
 
-		fmt.Printf("已推进 %s cursor 到 #%d\n", as, upToSeq)
+		fmt.Println(i18n.T("output.events.ack.ok", as, upToSeq))
 		return nil
 	},
 }
 
 var eventsWatchCmd = &cobra.Command{
 	Use:   "watch",
-	Short: "持续监听新事件（阻塞式轮询）",
+	Short: i18n.T("cmd.events.watch.short")（阻塞式轮询）",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		as, _ := cmd.Flags().GetString("as")
 		filter, _ := cmd.Flags().GetString("filter")
@@ -130,8 +131,8 @@ var eventsWatchCmd = &cobra.Command{
 			return fmt.Errorf("read cursor: %w", err)
 		}
 
-		fmt.Printf("开始监听事件 (actor: %s, interval: %ds, cursor: %d)\n", as, interval, sc.LastSeq)
-		fmt.Println("按 Ctrl+C 停止")
+		fmt.Println(i18n.T("output.events.watch.start", as, interval, sc.LastSeq))
+		fmt.Println(i18n.T("output.events.watch.stop"))
 
 		for {
 			events, err := s.Events.Poll(sc.LastSeq, filter, as, interval)
@@ -157,12 +158,12 @@ var eventsWatchCmd = &cobra.Command{
 
 var subscribersCmd = &cobra.Command{
 	Use:   "subscribers",
-	Short: "管理订阅者",
+	Short: i18n.T("cmd.events.subscribers.short"),
 }
 
 var subscribersListCmd = &cobra.Command{
 	Use:   "list",
-	Short: "列出所有订阅者",
+	Short: i18n.T("cmd.events.subscribers.list.short"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		s, err := getStore()
 		if err != nil {
@@ -174,7 +175,7 @@ var subscribersListCmd = &cobra.Command{
 		entries, err := os.ReadDir(dir)
 		if err != nil {
 			if os.IsNotExist(err) {
-				fmt.Println("无订阅者")
+				fmt.Println(i18n.T("output.events.subscribers.none"))
 				return nil
 			}
 			return fmt.Errorf("read subscribers dir: %w", err)
@@ -198,7 +199,7 @@ var subscribersListCmd = &cobra.Command{
 			fmt.Println(string(out))
 		} else {
 			if len(subscribers) == 0 {
-				fmt.Println("无订阅者")
+				fmt.Println(i18n.T("output.events.subscribers.none"))
 				return nil
 			}
 			for _, sc := range subscribers {
@@ -219,7 +220,7 @@ var subscribersListCmd = &cobra.Command{
 
 var subscribersResetCmd = &cobra.Command{
 	Use:   "reset <actor>",
-	Short: "重置订阅者 cursor",
+	Short: i18n.T("cmd.events.subscribers.reset.short"),
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		s, err := getStore()
@@ -235,7 +236,7 @@ var subscribersResetCmd = &cobra.Command{
 		if err := s.FS.WriteSubscriberCursor(sc); err != nil {
 			return err
 		}
-		fmt.Printf("已重置 %s cursor\n", args[0])
+		fmt.Println(i18n.T("output.events.subscribers.reset.ok", args[0]))
 		return nil
 	},
 }
@@ -249,15 +250,15 @@ func init() {
 	subscribersCmd.AddCommand(subscribersListCmd)
 	subscribersCmd.AddCommand(subscribersResetCmd)
 
-	eventsPollCmd.Flags().String("as", "", "订阅者名称")
-	eventsPollCmd.Flags().String("filter", "", "事件过滤器")
-	eventsPollCmd.Flags().Int("limit", 100, "返回数量上限")
-	eventsPollCmd.Flags().Bool("include-self", false, "包含自己产生的事件")
+	eventsPollCmd.Flags().String("as", "", i18n.T("flag.events.as"))
+	eventsPollCmd.Flags().String("filter", "", i18n.T("flag.events.filter"))
+	eventsPollCmd.Flags().Int("limit", 100, i18n.T("flag.events.limit"))
+	eventsPollCmd.Flags().Bool("include-self", false, i18n.T("flag.events.include_self"))
 
-	eventsAckCmd.Flags().String("as", "", "订阅者名称")
-	eventsAckCmd.Flags().Int64("up-to-seq", 0, "推进到此 seq")
+	eventsAckCmd.Flags().String("as", "", i18n.T("flag.events.as"))
+	eventsAckCmd.Flags().Int64("up-to-seq", 0, i18n.T("flag.events.up_to_seq"))
 
-	eventsWatchCmd.Flags().String("as", "", "订阅者名称")
-	eventsWatchCmd.Flags().String("filter", "", "事件过滤器")
-	eventsWatchCmd.Flags().Int("interval", 60, "轮询间隔（秒）")
+	eventsWatchCmd.Flags().String("as", "", i18n.T("flag.events.as"))
+	eventsWatchCmd.Flags().String("filter", "", i18n.T("flag.events.filter"))
+	eventsWatchCmd.Flags().Int("interval", 60, i18n.T("flag.events.interval"))
 }
