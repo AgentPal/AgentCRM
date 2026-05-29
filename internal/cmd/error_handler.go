@@ -18,6 +18,22 @@ func userFacingError(err error) string {
 		return i18n.T("error.contact.set.required")
 	case errors.Is(err, ErrContactFieldRequired):
 		return i18n.T("error.contact.field.required")
+	case errors.Is(err, ErrDealTitleRequired):
+		return i18n.T("error.deal.title.required")
+	case errors.Is(err, ErrDealSetRequired):
+		return i18n.T("error.deal.set.required")
+	case errors.Is(err, ErrDealStageIrreversible):
+		return i18n.T("error.deal.stage.irreversible")
+	case errors.Is(err, ErrDealFieldRequired):
+		return i18n.T("error.deal.field.required")
+	case errors.Is(err, ErrDealFieldUnsupported):
+		return i18n.T("error.deal.field.unsupported")
+	case errors.Is(err, ErrActivityContactRequired):
+		return i18n.T("error.activity.contact.required")
+	case errors.Is(err, ErrActivitySummaryRequired):
+		return i18n.T("error.activity.summary.required")
+	case errors.Is(err, ErrActivityDedupeKeyRequired):
+		return i18n.T("error.activity.dedupe_key.required")
 	default:
 		return err.Error()
 	}
