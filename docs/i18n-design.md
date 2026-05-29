@@ -443,16 +443,6 @@ for multi-word descriptors.
 }
 ```
 
-### 4.6 `config.*` — default configuration values (1 entry)
-
-```json
-{
-  "config.memory.preserve_patterns": "决策*, 偏好*, *性格*"
-}
-```
-
----
-
 ## 5. JSON Message File Format
 
 **Flat key-value format.** No nested objects, no build-time flatten step.
