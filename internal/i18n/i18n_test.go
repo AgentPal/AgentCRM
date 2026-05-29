@@ -164,6 +164,16 @@ func TestSetLang_Valid(t *testing.T) {
 
 func TestNoForbiddenTerms(t *testing.T) {
 	MustInit("en")
+
+	// Brand-level keys exempt from the "customer" check only.
+	// These keys describe AgentCRM as a product category, not data operations.
+	// See docs/i18n-design.md §10 Glossary exceptions.
+	customerExceptions := map[string]bool{
+		"cmd.root.short":           true,
+		"cmd.root.long":            true,
+		"output.root.version.text": true,
+	}
+
 	forbidden := map[string]string{
 		"customer":    "use 'contact' instead (see glossary)",
 		"opportunity": "use 'deal' instead (see glossary)",
@@ -178,6 +188,10 @@ func TestNoForbiddenTerms(t *testing.T) {
 	for key, val := range msgs {
 		valLower := strings.ToLower(val)
 		for term, hint := range forbidden {
+			// Allowlist only applies to "customer", not to opportunity/person
+			if term == "customer" && customerExceptions[key] {
+				continue
+			}
 			if strings.Contains(valLower, term) {
 				t.Errorf("en key %q = %q — contains %q (%s)", key, val, term, hint)
 			}

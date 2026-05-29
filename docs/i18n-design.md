@@ -711,6 +711,24 @@ in the JSON source for future cleanup.
 | 标签 | Tag | label, category |
 | 去重键 | Dedupe-key | — |
 
+### Glossary exceptions
+
+Brand-level keys where "customer" refers to the product category, not data:
+
+- `cmd.root.short` / `cmd.root.long` — product tagline and positioning
+- `output.root.version.text` — brand tagline in version output
+
+These keys describe AgentCRM as a product category (Customer Relationship
+Memory), not as a data model. The forbidden word "customer" in these
+specific keys is intentional brand language, not term drift.
+
+All other keys (cmd.contact.*, cmd.deal.*, flag.*, output.contact.*, etc.)
+remain subject to the standard glossary check — they describe data
+operations and must use the canonical term "contact".
+
+This exception list is enforced by TestNoForbiddenTerms via the
+customerExceptions map.
+
 ---
 
 ## 11. English Style Guide

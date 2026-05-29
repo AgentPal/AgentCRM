@@ -20,9 +20,9 @@
   "cmd.events.short": "Manage event subscriptions (multi-agent collaboration)",
   "cmd.memory.short": "Manage long-term memory",
   "cmd.root.init": "Initialize AgentCRM data directory",
-  "cmd.root.long": "AgentCRM is a local-first, file-based, zero-process contact memory system for AI agents. Distributed as a CLI tool, it gives every AI agent immediate persistent, readable, backup-friendly memory. All data lives in ~/AgentCRM/. Files are the source of truth — open them in any editor.",
+  "cmd.root.long": "AgentCRM is a local-first, file-based, zero-process customer relationship memory system. Distributed as a CLI tool, it gives every AI agent an immediate persistent, readable, backup-friendly customer memory. All data lives in ~/AgentCRM/. Files are the source of truth — open them in any editor.",
   "cmd.root.reindex": "Rebuild SQLite index from files",
-  "cmd.root.short": "Local-first contact memory — shared brain for your AI agents",
+  "cmd.root.short": "Local customer memory system — shared brain for your AI agents",
   "cmd.root.version": "Show version information",
   "config.memory.preserve_patterns": "decision*, preference*, *trait*",
   "error.activity.contact.required": "--contact is required",
@@ -85,5 +85,5 @@
   "output.io.export.done": "Export complete: %s",
   "output.memory.written": "Memory written: %s",
   "output.root.init.success": "AgentCRM initialized: %s",
-  "output.root.version.text": "Local-first CRM · No servers, no lock-in"
+  "output.root.version.text": "Local-first customer memory · No servers, no lock-in"
 }
