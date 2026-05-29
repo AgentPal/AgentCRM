@@ -26,3 +26,8 @@ dist/
 # 系统
 .DS_Store
 Thumbs.db
+
+# Scripts 临时文件（保留 .js 和 README）
+scripts/*.tmp
+scripts/*.log
+scripts/output/
