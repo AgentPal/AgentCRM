@@ -6,18 +6,19 @@ import (
 	"os"
 	"strings"
 
+	"github.com/AgentPal/AgentCRM/internal/i18n"
 	"github.com/AgentPal/AgentCRM/internal/model"
 	"github.com/spf13/cobra"
 )
 
 var activityCmd = &cobra.Command{
 	Use:   "activity",
-	Short: "管理活动记录",
+	Short: i18n.T("cmd.activity.short"),
 }
 
 var activityLogCmd = &cobra.Command{
 	Use:   "log",
-	Short: "记录一次互动",
+	Short: i18n.T("cmd.activity.log.short"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		contactID, _ := cmd.Flags().GetString("contact")
 		dealID, _ := cmd.Flags().GetString("deal")
@@ -87,11 +88,11 @@ var activityLogCmd = &cobra.Command{
 			fmt.Println(string(out))
 		} else {
 			if !created {
-				fmt.Printf("活动已存在（重复）: %s\n", a.ID)
+				fmt.Printf(i18n.T("output.activity.dup")+"\n", a.ID)
 			} else {
-				fmt.Printf("已记录活动: %s\n", a.ID)
-				fmt.Printf("  类型: %s\n", a.Type)
-				fmt.Printf("  摘要: %s\n", a.Summary)
+				fmt.Printf(i18n.T("output.activity.logged")+"\n", a.ID)
+				fmt.Printf(i18n.T("output.activity.type")+"\n", a.Type)
+				fmt.Printf(i18n.T("output.activity.summary")+"\n", a.Summary)
 			}
 		}
 		return nil
@@ -100,7 +101,7 @@ var activityLogCmd = &cobra.Command{
 
 var activityListCmd = &cobra.Command{
 	Use:   "list",
-	Short: "列出活动",
+	Short: i18n.T("cmd.activity.list.short"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		contactID, _ := cmd.Flags().GetString("contact")
 		since, _ := cmd.Flags().GetString("since")
@@ -129,7 +130,7 @@ var activityListCmd = &cobra.Command{
 			fmt.Println(string(out))
 		} else {
 			if len(activities) == 0 {
-				fmt.Println("无活动记录")
+				fmt.Println(i18n.T("output.activity.list.none"))
 				return nil
 			}
 			for _, a := range activities {
@@ -143,7 +144,7 @@ var activityListCmd = &cobra.Command{
 				}
 				fmt.Printf(": %s\n", a.Summary)
 			}
-			fmt.Printf("\n共 %d 条记录\n", len(activities))
+			fmt.Print(i18n.Tn("output.activity.list.count", len(activities)))
 		}
 		return nil
 	},
@@ -151,7 +152,7 @@ var activityListCmd = &cobra.Command{
 
 var timelineCmd = &cobra.Command{
 	Use:   "timeline <contact-id>",
-	Short: "查看联系人的时间线（含活动 + 商机变动）",
+	Short: i18n.T("cmd.activity.timeline.short"),
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		since, _ := cmd.Flags().GetString("since")
@@ -210,7 +211,7 @@ var timelineCmd = &cobra.Command{
 			fmt.Println(string(out))
 		} else {
 			if len(activities) == 0 && len(dealChanges) == 0 {
-				fmt.Println("无活动记录")
+				fmt.Println(i18n.T("output.activity.timeline.none"))
 				return nil
 			}
 
@@ -232,15 +233,15 @@ var timelineCmd = &cobra.Command{
 
 			// 显示商机变动
 			if len(dealChanges) > 0 {
-				fmt.Println("\n--- 商机变动 ---")
+				fmt.Println(i18n.T("output.activity.timeline.deal_section"))
 				for _, c := range dealChanges {
 					fmt.Println(c)
 				}
 			}
 
-			fmt.Printf("\n共 %d 条活动", len(activities))
+			fmt.Print(i18n.Tn("output.activity.timeline.count", len(activities)))
 			if len(dealChanges) > 0 {
-				fmt.Printf(", %d 条商机变动", len(dealChanges))
+				fmt.Print(i18n.Tn("output.activity.timeline.deal_count", len(dealChanges)))
 			}
 			fmt.Println()
 		}
@@ -253,21 +254,21 @@ func init() {
 	activityCmd.AddCommand(activityListCmd)
 	activityCmd.AddCommand(timelineCmd)
 
-	activityLogCmd.Flags().String("contact", "", "联系人 ID（必需）")
-	activityLogCmd.Flags().String("deal", "", "商机 ID")
-	activityLogCmd.Flags().String("type", "note", "类型: email|call|meeting|chat|note|social")
-	activityLogCmd.Flags().String("direction", "in", "方向: in|out")
-	activityLogCmd.Flags().String("channel", "", "渠道: gmail|twitter|wechat|phone|...")
-	activityLogCmd.Flags().String("summary", "", "一句话摘要（必需）")
-	activityLogCmd.Flags().String("dedupe-key", "", "去重键（必需）")
-	activityLogCmd.Flags().String("body-file", "", "正文文件路径")
+	activityLogCmd.Flags().String("contact", "", i18n.T("flag.activity.contact"))
+	activityLogCmd.Flags().String("deal", "", i18n.T("flag.activity.deal"))
+	activityLogCmd.Flags().String("type", "note", i18n.T("flag.activity.type"))
+	activityLogCmd.Flags().String("direction", "in", i18n.T("flag.activity.direction"))
+	activityLogCmd.Flags().String("channel", "", i18n.T("flag.activity.channel"))
+	activityLogCmd.Flags().String("summary", "", i18n.T("flag.activity.summary"))
+	activityLogCmd.Flags().String("dedupe-key", "", i18n.T("flag.activity.dedupe_key"))
+	activityLogCmd.Flags().String("body-file", "", i18n.T("flag.activity.body_file"))
 
-	activityListCmd.Flags().String("contact", "", "联系人 ID")
-	activityListCmd.Flags().String("since", "", "起始时间")
-	activityListCmd.Flags().String("type", "", "活动类型")
-	activityListCmd.Flags().String("search", "", "搜索摘要和正文")
-	activityListCmd.Flags().Int("limit", 50, "返回数量上限")
+	activityListCmd.Flags().String("contact", "", i18n.T("flag.activity.contact"))
+	activityListCmd.Flags().String("since", "", i18n.T("flag.activity.since"))
+	activityListCmd.Flags().String("type", "", i18n.T("flag.activity.type_filter"))
+	activityListCmd.Flags().String("search", "", i18n.T("flag.activity.search"))
+	activityListCmd.Flags().Int("limit", 50, i18n.T("flag.activity.limit"))
 
-	timelineCmd.Flags().String("since", "", "起始时间")
-	timelineCmd.Flags().String("detail", "standard", "详细程度: brief|standard|full")
+	timelineCmd.Flags().String("since", "", i18n.T("flag.activity.since"))
+	timelineCmd.Flags().String("detail", "standard", i18n.T("flag.activity.detail"))
 }
