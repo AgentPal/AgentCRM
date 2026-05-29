@@ -59,7 +59,6 @@
   "cmd.root.reindex": "Rebuild SQLite index from files",
   "cmd.root.short": "Local customer memory system — shared brain for your AI agents",
   "cmd.root.version": "Show version information",
-  "config.memory.preserve_patterns": "decision*, preference*, *trait*",
   "error.activity.contact.required": "--contact is required",
   "error.activity.dedupe_key.required": "--dedupe-key is required",
   "error.activity.summary.required": "--summary is required",

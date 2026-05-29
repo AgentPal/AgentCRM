@@ -21,7 +21,6 @@ type UserConfig struct {
 
 type MemoryConfig struct {
 	DefaultDecay      string   `json:"default_decay"`
-	PreservePatterns  []string `json:"preserve_patterns"`
 	ProposeConfidence float64  `json:"propose_confidence,omitempty"`
 }
 
@@ -56,7 +55,6 @@ func DefaultConfig(dataDir string) *Config {
 		},
 		Memory: MemoryConfig{
 			DefaultDecay:      "180d",
-			PreservePatterns:  []string{"决策*", "偏好*", "*性格*"},
 			ProposeConfidence: 0.7,
 		},
 		Search: SearchConfig{

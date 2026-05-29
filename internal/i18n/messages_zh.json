@@ -59,7 +59,6 @@
   "cmd.root.reindex": "从文件重建 SQLite 索引",
   "cmd.root.short": "本地客户记忆系统 - 给你的 AI Agent 一个共享的客户大脑",
   "cmd.root.version": "显示版本信息",
-  "config.memory.preserve_patterns": "决策*, 偏好*, *性格*",
   "error.activity.contact.required": "--contact 是必需的",
   "error.activity.dedupe_key.required": "--dedupe-key 是必需的",
   "error.activity.summary.required": "--summary 是必需的",
