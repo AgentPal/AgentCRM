@@ -706,6 +706,7 @@ in the JSON source for future cleanup.
 | 订阅者 | Subscriber | — |
 | 提醒 | Alert | notification |
 | 规则 | Rule | — |
+| 订阅者 | Subscriber | — |
 | 币种 | Currency | — |
 | 阶段 | Stage | phase, step |
 | 标签 | Tag | label, category |
