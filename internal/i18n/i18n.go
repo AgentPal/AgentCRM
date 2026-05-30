@@ -16,10 +16,30 @@ var enJSON []byte
 var zhJSON []byte
 
 var (
-	mu       sync.RWMutex
-	current  = "en"
-	messages map[string]map[string]string // lang -> key -> value
+	mu           sync.RWMutex
+	current      = "en"
+	messages     map[string]map[string]string // lang -> key -> value
+	initOnce     sync.Once
 )
+
+// lazyInit ensures i18n is initialized before any T/Tn call.
+// This is necessary because init() functions in other packages may call
+// T() before any explicit initialization in main().
+func lazyInit() {
+	initOnce.Do(func() {
+		m := make(map[string]map[string]string)
+		for lang, data := range map[string][]byte{"en": enJSON, "zh": zhJSON} {
+			var kv map[string]string
+			if err := json.Unmarshal(data, &kv); err != nil {
+				panic("i18n: corrupt embedded json: " + err.Error())
+			}
+			m[lang] = kv
+		}
+		mu.Lock()
+		messages = m
+		mu.Unlock()
+	})
+}
 
 // MustInit loads embedded message files and selects the active language.
 // The cmdLang parameter is the --lang CLI flag value (may be empty).
@@ -81,6 +101,7 @@ func CurrentLang() string {
 // T translates key to the active language with optional fmt-style args.
 // Fallback chain: current lang -> en -> "[missing: <key>]".
 func T(key string, args ...interface{}) string {
+	lazyInit()
 	mu.RLock()
 	defer mu.RUnlock()
 
@@ -108,6 +129,7 @@ func T(key string, args ...interface{}) string {
 // the first real plural message is introduced. Current implementation
 // has the selection logic but no test coverage with actual plural keys.
 func Tn(key string, n int, args ...interface{}) string {
+	lazyInit()
 	mu.RLock()
 	defer mu.RUnlock()
 

@@ -50,6 +50,7 @@ func userFacingError(err error) string {
 // Execute is the main entry point. It runs the root command and handles error
 // display with i18n translation. Errors are printed to stderr; normal output to stdout.
 func Execute() {
+	i18n.MustInit("")
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, userFacingError(err))
 		os.Exit(1)
