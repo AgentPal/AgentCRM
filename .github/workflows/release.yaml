@@ -45,10 +45,12 @@ jobs:
           cache: true
 
       - name: Build
+        env:
+          GOOS: ${{ matrix.platform }}
+          GOARCH: ${{ matrix.goarch }}
         run: |
           cd cmd/agentcrm
-          GOOS=${{ matrix.platform }} GOARCH=${{ matrix.goarch }} \
-            go build -ldflags="-X 'github.com/AgentPal/AgentCRM/internal/cmd.appVersion=${{ github.ref_name }}'" \
+          go build -ldflags="-X 'github.com/AgentPal/AgentCRM/internal/cmd.appVersion=${{ github.ref_name }}'" \
             -o agentcrm${{ matrix.platform == 'windows' && '.exe' || '' }} .
 
       - name: Package
