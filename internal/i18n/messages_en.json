@@ -140,6 +140,7 @@
   "flag.io.format": "export format: json|csv",
   "flag.io.out": "output directory",
   "flag.io.source": "import source: vcard|csv",
+  "flag.memory.as_of": "view data as of this time",
   "flag.memory.action": "action: supersede|keep-both|reject",
   "flag.memory.confidence": "confidence (0-1)",
   "flag.memory.decay": "decay policy",
