@@ -857,6 +857,21 @@ which immediately surfaced issue #2 on the first real test run.
 - Tests using `T()` with numeric arguments must verify the result
   matches the expected singular/plural form
 
+### 13.3 Cobra command Short/Long descriptions don't switch language
+
+Command descriptions (`Short`, `Long`) are evaluated at `init()` time via
+struct literals, before `AGENTCRM_LANG` is read. So
+`AGENTCRM_LANG=zh agentcrm --help` shows English command descriptions,
+while actual command output (results, errors) correctly switches to
+Chinese.
+
+**Impact:** Low — help text is read by technical users who can read English
+command names; interactive output (the part users act on) switches correctly.
+
+**Future direction (v0.2.0):** defer command registration until after
+language is determined, or use cobra's `SetHelpFunc`/`SetUsageFunc` to
+translate at display time.
+
 ---
 
 ## 14. Exclusions (v1.0 scope)
