@@ -278,6 +278,7 @@ var ruleAddCmd = &cobra.Command{
 			return fmt.Errorf("parse yaml: %w", err)
 		}
 		if len(cfg.Rules) == 0 {
+			// format string is a translated message; placeholder consistency enforced by TestPlaceholderConsistency
 			return fmt.Errorf(i18n.T("error.alert.rule.empty"))
 		}
 

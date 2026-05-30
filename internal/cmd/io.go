@@ -59,6 +59,7 @@ var importCmd = &cobra.Command{
 		file, _ := cmd.Flags().GetString("file")
 
 		if file == "" {
+			// format string is a translated message; placeholder consistency enforced by TestPlaceholderConsistency
 			return fmt.Errorf(i18n.T("error.io.file.required"))
 		}
 
@@ -371,6 +372,7 @@ func importCSV(s *store.Store, path string) error {
 		return fmt.Errorf("read csv: %w", err)
 	}
 	if len(records) < 2 {
+		// format string is a translated message; placeholder consistency enforced by TestPlaceholderConsistency
 		return fmt.Errorf(i18n.T("error.io.csv.header_required"))
 	}
 

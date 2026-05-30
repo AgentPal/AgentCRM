@@ -264,6 +264,7 @@ var dealGetCmd = &cobra.Command{
 				fmt.Printf(i18n.T("output.deal.get.as_of")+"\n", asOf)
 			}
 			fmt.Printf("ID: %s\n", d.ID)
+			// format string is a translated message; placeholder consistency enforced by TestPlaceholderConsistency
 			fmt.Printf(i18n.T("output.deal.get.title")+"\n", d.Title)
 			fmt.Printf(i18n.T("output.deal.get.stage")+"\n", d.Stage)
 			fmt.Printf(i18n.T("output.deal.get.amount")+"\n", d.Amount, d.Currency)
