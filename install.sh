@@ -1,6 +1,6 @@
 #!/bin/sh
 # AgentCRM 安装脚本
-# 用法: curl -sfL https://github.com/AgentPal/AgentCRM/releases/latest/download/install.sh | sh
+# 用法: curl -fsSL https://raw.githubusercontent.com/AgentPal/AgentCRM/main/install.sh | sh
 
 set -eu
 
