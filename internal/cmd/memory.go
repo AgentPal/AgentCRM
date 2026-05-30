@@ -31,7 +31,8 @@ var memoryWriteCmd = &cobra.Command{
 
 		scopeType, scopeID := parseScope(scope)
 		if scopeType == "" {
-			return fmt.Errorf(i18n.T("error.memory.scope.format"))
+			// format string is a translated message; placeholder consistency enforced by TestPlaceholderConsistency
+		return fmt.Errorf(i18n.T("error.memory.scope.format"))
 		}
 
 		s, err := getStore()

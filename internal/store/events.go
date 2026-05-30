@@ -288,6 +288,7 @@ func TextSimilarity(a, b string) float64 {
 func (s *MemoStore) Propose(scope, statement, sourceSnippet, actor string, confidence float64) (*model.Proposal, error) {
 	parts := strings.SplitN(scope, ":", 2)
 	if len(parts) != 2 {
+		// format string is a translated message; placeholder consistency enforced by TestPlaceholderConsistency
 		return nil, fmt.Errorf(i18n.T("error.memory.scope.format"))
 	}
 	scopeType, scopeID := parts[0], parts[1]
